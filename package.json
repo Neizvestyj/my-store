@@ -9,7 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.5.22"
+    "@fortawesome/fontawesome-free": "^7.1.0",
+    "swiper": "^12.0.2",
+    "vue": "^3.5.22",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.1",
