@@ -1,7 +1,8 @@
 <script>
 import Search from './Search.vue'
+import Burger from './Burger.vue'
 export default {
-  components: { Search },
+  components: { Search, Burger },
 }
 
 </script>
@@ -15,7 +16,7 @@ export default {
           <Search />
         </div>
         <div class="header-right">
-          <BurgerMenu />
+          <Burger />
           <Registration />
           <Bascet />
 
