@@ -7,10 +7,14 @@ const store = createStore({
             cards: [], // загружает async fetchCards начальный массив карточек
             filteredCards: [],// Фильтрованные карточки
             filteredCatalog: [],// Каталог карточек
+            cart: [],
             isOpen: false,//флаг для бургера 
+            isValid: false,//флаг для карт
+            sum: 0,
         };
     },
     mutations: {
+        //компонент Search
         setCards(state, products) {//вызывается в fetchCards 
             console.log("Products set in state:", products);
             state.cards = products; // Устанавливаем карточки в состояние
@@ -29,13 +33,51 @@ const store = createStore({
                 );
             }
         },
+        //компонент Burger
         toggleMenu(state) {
             state.isOpen = !state.isOpen;
         },
         closeMenu(state) {
             state.isOpen = false;
         },
+
+        //компонент Cart
+        del(state, idDel) {
+            const cardToRemove = state.cart.find(c => c.id === idDel);
+            if (cardToRemove) {
+                state.sum -= cardToRemove.price;
+            }
+            state.cart = state.cart.filter(c => c.id !== idDel);
+        },
+        buy(state) {
+            state.sum = 0;
+            state.cart = [];
+            console.log("Clearing cart");
+        },
+        clear(state) {
+            state.cart = [];
+            console.log("Clearing cart");
+        },
+        increaseQuantity(state, { quantity, currentImage }) {
+            const card = state.cart.find(item => item.id === currentImage);
+            if (card) {
+                //state.sum -= card.price * card.quantity;
+                card.quantity = quantity;
+                state.sum += card.price  //card.quantity;
+
+            }
+        },
+        decreaseQuantity(state, { quantity, currentImage }) {
+            const card = state.cart.find(item => item.id === currentImage);
+            if (card) {
+                //state.sum -= card.price * card.quantity;
+                card.quantity = quantity;
+                state.sum += card.price  //card.quantity;
+            }
+        },
     },
+
+
     actions: {
         async fetchCards({ commit }) {
             try {
@@ -75,6 +117,25 @@ const store = createStore({
         closeMenu({ commit }) {
             commit("closeMenu"); // Вызов мутации для переключения состояния
         },
+        //компонент Cart
+        del({ commit }, idDel) {
+            commit("del", idDel)
+        },
+        buy({ commit }) {
+            commit("buy")
+        },
+        clear({ commit }) {
+            commit("clear")
+        },
+        increaseQuantity({ commit }, { quantity, currentImage }) {
+            commit("increaseQuantity", { quantity, currentImage })
+        },
+
+        decreaseQuantity({ commit }, payload) {
+            commit("decreaseQuantity", payload);
+        },
+
+
     },
     getters: {
         cards: state => state.cards,

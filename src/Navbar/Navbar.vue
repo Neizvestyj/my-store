@@ -1,8 +1,10 @@
 <script>
 import Search from './Search.vue'
 import Burger from './Burger.vue'
+import RegistrationLink from './RegistrationLink.vue'
+import Basket from './Basket.vue'
 export default {
-  components: { Search, Burger },
+  components: { Search, Burger, RegistrationLink, Basket },
 }
 
 </script>
@@ -17,8 +19,8 @@ export default {
         </div>
         <div class="header-right">
           <Burger />
-          <Registration />
-          <Bascet />
+          <RegistrationLink />
+          <Basket />
 
         </div>
       </div>
