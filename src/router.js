@@ -1,14 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from './navbar/Login.vue'
-import Cart from './navbar/Cart.vue'
 
-//const Login = () => import('./navbar/login.vue');
-//onst Cart = () => import('./navbar/cart.vue')
+//import Login from './navbar/Login.vue'
+//import Cart from './navbar/Cart.vue'
+//import Promo from './Promo.vue'
 
+const Login = () => import('./navbar/login.vue');
+const Cart = () => import('./navbar/cart.vue')
+const Promo = () => import('./promo.vue')
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        { path: '/login', component: Login, alias: '/' },
+        { path: '/', redirect: '/promo' },
+        { path: '/promo', component: Promo },
+        { path: '/login', component: Login },
         { path: '/cart', component: Cart },
 
     ],
