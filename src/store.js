@@ -11,6 +11,9 @@ const store = createStore({
             isOpen: false,//флаг для бургера 
             isValid: false,//флаг для карт
             sum: 0,
+            currentPage: 1,
+            itemsPerPage: 2,
+
         };
     },
     mutations: {
@@ -75,6 +78,36 @@ const store = createStore({
                 state.sum += card.price  //card.quantity;
             }
         },
+
+        //фильтрация в Catalog
+        //компонент navFilter
+        sortFilteredCards(state, { filter, priceRanges }) {
+            let filteredProducts = state.cards;
+            // Фильтрация по диапазонам цены
+            if (priceRanges.length > 0) {
+                filteredProducts = filteredProducts.filter(item => {
+                    return priceRanges.some(range => {
+                        if (range === "$0 - $50") return item.price <= 50;
+                        if (range === "$50 - $100") return item.price > 50 && item.price <= 100;
+                        if (range === "$100 - $200") return item.price > 100 && item.price <= 200;
+                        if (range === "Over $200") return item.price > 200;
+                        return false;
+                    });
+                });
+            }
+            // Фильтрация по трендам
+            if (filter === "trending") {
+                filteredProducts = filteredProducts.filter(t => t.trending === true);
+            }
+            state.filteredCatalog = filteredProducts;
+        },
+
+        //компонент pagination
+        setCurrentPage(state, page) {
+            state.currentPage = page;
+        },
+
+
     },
 
 
@@ -129,10 +162,19 @@ const store = createStore({
         },
         increaseQuantity({ commit }, { quantity, currentImage }) {
             commit("increaseQuantity", { quantity, currentImage })
-        },
-
-        decreaseQuantity({ commit }, payload) {
+        }, decreaseQuantity({ commit }, payload) {
             commit("decreaseQuantity", payload);
+        },
+        //компонент navFilter
+        sortItems({ commit }, { filter, priceRanges }) {
+            commit("sortFilteredCards", { filter, priceRanges })
+        },
+        sortCheckbox({ commit }, { filter, priceRanges }) {
+            commit("sortFilteredCards", { filter, priceRanges }); // Используем новую мутацию
+        },
+        //компонент pagination
+        goToPage({ commit }, page) {
+            commit('setCurrentPage', page);
         },
 
 
@@ -141,6 +183,15 @@ const store = createStore({
         cards: state => state.cards,
         filteredCards: state => state.filteredCards,
         filteredCatalog: state => state.filteredCatalog,
+        //компонент pagination
+        totalPages(state) {
+            return Math.ceil(state.filteredCatalog.length / state.itemsPerPage);
+        },
+        paginatedCatalog(state) {
+            const start = (state.currentPage - 1) * state.itemsPerPage;
+            const end = start + state.itemsPerPage;
+            return state.filteredCatalog.slice(start, end + 1);
+        },
     },
 });
 store.dispatch('fetchCards');

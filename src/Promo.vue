@@ -125,7 +125,7 @@ export default {
                 </div>
 
                 <div class="block">
-                    <router-link to="/Catalog/promoMini">
+                    <router-link to="./promomini">
                         <a class="All-Product"> Browse All Product </a>
                     </router-link>
                 </div>
