@@ -12,7 +12,6 @@ const store = createStore({
             isValid: false,//флаг для карт
             sum: 0,
             currentPage: 1,
-            itemsPerPage: 2,
 
         };
     },
@@ -107,6 +106,10 @@ const store = createStore({
             state.currentPage = page;
         },
 
+        //компонент Footer/Feedback
+        login(state) {
+            alert("Сообщение отправлено ");
+        },
 
     },
 
@@ -165,7 +168,6 @@ const store = createStore({
         }, decreaseQuantity({ commit }, payload) {
             commit("decreaseQuantity", payload);
         },
-        //компонент navFilter
         sortItems({ commit }, { filter, priceRanges }) {
             commit("sortFilteredCards", { filter, priceRanges })
         },
@@ -177,6 +179,11 @@ const store = createStore({
             commit('setCurrentPage', page);
         },
 
+        //компонент Footer/Feedback
+        login({ commit }) {
+            commit("login")
+        },
+
 
     },
     getters: {
@@ -186,11 +193,6 @@ const store = createStore({
         //компонент pagination
         totalPages(state) {
             return Math.ceil(state.filteredCatalog.length / state.itemsPerPage);
-        },
-        paginatedCatalog(state) {
-            const start = (state.currentPage - 1) * state.itemsPerPage;
-            const end = start + state.itemsPerPage;
-            return state.filteredCatalog.slice(start, end + 1);
         },
     },
 });
