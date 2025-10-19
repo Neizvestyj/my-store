@@ -12,6 +12,8 @@ const store = createStore({
             isValid: false,//флаг для карт
             sum: 0,
             currentPage: 1,
+            itemsPerPage: 2,
+            currentImage: 0,
 
         };
     },
@@ -77,6 +79,31 @@ const store = createStore({
                 state.sum += card.price  //card.quantity;
             }
         },
+        //компонент Promo
+        add(state, payload) {
+            const { currentImage, color, size, quantity } = payload;
+            if (currentImage == null) {
+                console.error("currentImage is null");
+                return;
+            }
+            const productToAdd = state.filteredCards.find(item => item.id === currentImage);
+
+            // Проверка найденного продукта
+            if (!productToAdd) {
+                console.error(`Product with id ${currentImage} not found in state.cards`);
+                return; // Если продукт не найден, выходим из функции
+            }
+
+            const existingProduct = state.cart.find(item => item.id === productToAdd.id);
+            if (existingProduct) {
+                existingProduct.quantity += quantity;
+                state.sum += existingProduct.price * quantity; // Увеличиваем сумму на стоимость добавленного объема
+            } else {
+                const newProduct = { ...productToAdd, quantity, color, size };
+                state.cart.push(newProduct);
+                state.sum += newProduct.price * newProduct.quantity; // Увеличиваем сумму на стоимость нового продукта
+            }
+        },
 
         //фильтрация в Catalog
         //компонент navFilter
@@ -110,6 +137,10 @@ const store = createStore({
         login(state) {
             alert("Сообщение отправлено ");
         },
+        //компонент Alert
+        setIsValid(state, value) {
+            state.isValid = value
+        },
 
     },
 
@@ -132,7 +163,10 @@ const store = createStore({
         searchCards({ commit }, searchText) {
             commit('searchCards', searchText);
         },
-
+        //компонент Promo 
+        add({ commit }, payLoad) {
+            commit("add", payLoad)
+        },
         onOutside({ commit }, menu) {
             const outsideClickHandler = (event) => {
                 //Провереяем не был ли клик в меню
@@ -183,7 +217,13 @@ const store = createStore({
         login({ commit }) {
             commit("login")
         },
-
+        //компонент Alert
+        hideAlert({ commit }) {
+            commit("setIsValid", false)
+        },
+        setIsValid({ commit }) {
+            commit("setIsValid", false)
+        },
 
     },
     getters: {
@@ -193,6 +233,11 @@ const store = createStore({
         //компонент pagination
         totalPages(state) {
             return Math.ceil(state.filteredCatalog.length / state.itemsPerPage);
+        },
+        paginatedCatalog(state) {
+            const start = (state.currentPage - 1) * state.itemsPerPage;
+            const end = start + state.itemsPerPage;
+            return state.filteredCatalog.slice(start, end + 1);
         },
     },
 });

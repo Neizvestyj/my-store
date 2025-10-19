@@ -1,18 +1,23 @@
 <script>
+import Alert from '../Alert.vue'
 import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 export default {
     name: 'Feedback',
+    components: { Alert },
     setup() {
         const store = useStore();
         const email = ref("");
         const emailError = ref("");
+        // Вычисляемая переменная для проверки валидности
         const isValid = computed(() => {
-            return validateEmail(email) && email.value !== '';
+            return validateEmail(email.value) && email.value !== '';
         });
+        // Вычисляемое свойство для сообщения об ошибке
         const emailErrorMessage = () => {
             return emailError.value !== '' ? emailError.value : '';
         };
+        // Валидация адреса электронной почты
         const validateEmail = (email) => {
             const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             return re.test(String(email).toLowerCase());
@@ -22,10 +27,13 @@ export default {
                 store.dispatch('login');
                 emailError.value = '';
                 email.value = "";
-                store.state.isValid = true;
+                // Используем мутацию, чтобы изменить состояние
+                store.commit('setIsValid', true);
+                //store.state.isValid = true;
             } else {
                 emailError.value = 'Введите корректный адрес электронной почты';
-                store.state.isValid = false;
+                store.commit('setIsValid', false);
+                // store.state.isValid = false;
             }
 
         };
@@ -65,7 +73,7 @@ export default {
                     <input v-model.trim="email" placeholder="Enter Your Email" type="text" class="search-field">
 
                     <input type="submit" value="Subscribe" class="search-btn">
-                    <span v-if="emailError" class="error-message">{{ emailErrorMessage }}</span>
+                    <span v-if="emailError" class="error-message">{{ emailErrorMessage.value }}</span>
 
                 </form>
 

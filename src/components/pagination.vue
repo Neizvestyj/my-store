@@ -42,8 +42,8 @@ export default {
                             class="fas fa-chevron-left aria-hidden"></i></button>
                     <div class="button-page-num">
                         <button v-for="page in totalPages" :key="page" @click="goToPage(page)"
-                            :class="{ colorRed: currentPage === page }"
-                            class="but-1 but-but but-size but-cursor">{{ page }}</button>
+                            :class="{ colorRed: currentPage === page }" class="but-1 but-but but-size but-cursor">{{ page
+                            }}</button>
 
                         <div class="botton-20 but-but but-size">
                             <p class="pages-dash but-cursor">.....</p>

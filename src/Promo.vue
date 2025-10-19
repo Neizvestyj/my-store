@@ -12,7 +12,7 @@ export default {
         const add = (cardId) => {
             console.log("Adding product with ID:", cardId);
             const payload = {
-                currentImage: currentImage.value,
+                currentImage: cardId,
                 color: color.value,
                 size: size.value,
                 quantity: quantity.value
@@ -125,7 +125,7 @@ export default {
                 </div>
 
                 <div class="block">
-                    <router-link to="./promomini">
+                    <router-link to="/PromoMini">
                         <a class="All-Product"> Browse All Product </a>
                     </router-link>
                 </div>

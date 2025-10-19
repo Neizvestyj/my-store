@@ -1,4 +1,5 @@
 <script>
+alert('dfrgfds')
 import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 export default {
@@ -15,13 +16,13 @@ export default {
         const drop = ref(null);
 
         const sortItems = () => {
-            console.log("sortItems", selectedFilter)
-            let selectedPriceRanges = Object.entries(priceRanges)
+            console.log("sortItems", selectedFilter.value)
+            let selectedPriceRanges = Object.entries(priceRanges.value)
                 .filter(([range, isChecked]) => isChecked) // Отбираем только отмеченные диапазоны
                 .map(([range]) => range);
             // Получаем только названия диапазонов
             store.dispatch("sortItems", {
-                filter: this.selectedFilter,
+                filter: selectedFilter.value,
                 priceRanges: selectedPriceRanges
             }).then(() => {
                 console.log("Dispatch completed"); // Подтверждение выполнения действия
@@ -37,18 +38,18 @@ export default {
 
         const sortCheckbox = () => {
             console.log("sortCheckbox")
-            let selectedPriceRanges = Object.entries(priceRanges)
+            let selectedPriceRanges = Object.entries(priceRanges.value)
                 .filter(([range, isChecked]) => isChecked) // Отбираем только отмеченные диапазоны
                 .map(([range]) => range); // Получаем только названия диапазонов
             store.dispatch("sortCheckbox", {
-                filter: selectedFilter,
+                filter: selectedFilter.value,
                 priceRanges: selectedPriceRanges
             });
             drop = null;
         };
 
         const togglePriceRange = (priceRange) => {
-            priceRanges[priceRange] = !priceRanges[priceRange];
+            priceRanges.value[priceRange] = !priceRanges.value[priceRange];
             sortCheckbox();
             drop = null
         };
@@ -61,6 +62,7 @@ export default {
             togglePriceRange,
             priceRanges,
             sortCheckbox,
+            drop
         };
     }
 };
@@ -288,7 +290,5 @@ export default {
 
 
 
-
-
     </div>
-</template >
+</template>
