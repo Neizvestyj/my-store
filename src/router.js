@@ -7,7 +7,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const Login = () => import('./navbar/login.vue');
 const Cart = () => import('./navbar/cart.vue');
 const Promo = () => import('./promo.vue');
-const promomini = () => import('./PromoMini.vue');
+const promomini = () => import('./p/PromoMini.vue');
 const router = createRouter({
     history: createWebHistory(),
     routes: [
