@@ -1,5 +1,5 @@
 <script>
-alert('promomini')
+
 import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import navFilter from './navFilter.vue';

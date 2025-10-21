@@ -1,5 +1,5 @@
 <script>
-alert('catalogblock')
+
 import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 export default {

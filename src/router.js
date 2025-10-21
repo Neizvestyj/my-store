@@ -7,7 +7,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 const Login = () => import('./navbar/login.vue');
 const Cart = () => import('./navbar/cart.vue');
 const Promo = () => import('./promo.vue');
-const promomini = () => import('./p/PromoMini.vue');
+const PromoMini = () => import('./Catalog/PromoMini.vue');
+const promoProduct = () => import('./Product/promoProduct.vue');
 const router = createRouter({
     history: createWebHistory(),
     routes: [
@@ -15,7 +16,8 @@ const router = createRouter({
         { path: '/promo', component: Promo },
         { path: '/login', component: Login },
         { path: '/cart', component: Cart },
-        { path: '/promomini', component: promomini },
+        { path: '/PromoMini', component: PromoMini },
+        { path: '/promoProduct', component: promoProduct },
 
     ],
     linkActiveClass: 'active',

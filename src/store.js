@@ -11,9 +11,13 @@ const store = createStore({
             isOpen: false,//флаг для бургера 
             isValid: false,//флаг для карт
             sum: 0,
+            //компонент pagination
             currentPage: 1,
             itemsPerPage: 2,
             currentImage: 0,
+            // компонент Product
+            sliderPage: 1,
+            sliderItemsPerPage: 1,
 
         };
     },
@@ -199,7 +203,8 @@ const store = createStore({
         },
         increaseQuantity({ commit }, { quantity, currentImage }) {
             commit("increaseQuantity", { quantity, currentImage })
-        }, decreaseQuantity({ commit }, payload) {
+        },
+        decreaseQuantity({ commit }, payload) {
             commit("decreaseQuantity", payload);
         },
         sortItems({ commit }, { filter, priceRanges }) {
@@ -238,6 +243,12 @@ const store = createStore({
             const start = (state.currentPage - 1) * state.itemsPerPage;
             const end = start + state.itemsPerPage;
             return state.filteredCatalog.slice(start, end + 1);
+        },
+        //компонент Product
+        sliderCatalog(state) {
+            const start = (state.sliderPage - 1) * state.sliderItemsPerPage;
+            const end = start + state.sliderItemsPerPage;
+            return state.filteredCatalog.slice(start, end);
         },
     },
 });

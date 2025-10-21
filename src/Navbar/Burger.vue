@@ -97,7 +97,7 @@ export default {
                     </label>
                     <p class="input-menu">MENU</p>
 
-                    <router-link to="/Product/promoProduct" @click.native="closeMenu" class="input-summary"> NEW ARRIVALS
+                    <router-link to="promoProduct" @click.native="closeMenu" class="input-summary"> NEW ARRIVALS
                     </router-link>
 
                     <details>
