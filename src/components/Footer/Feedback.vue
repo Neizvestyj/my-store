@@ -14,9 +14,9 @@ export default {
             return validateEmail(email.value) && email.value !== '';
         });
         // Вычисляемое свойство для сообщения об ошибке
-        const emailErrorMessage = () => {
+        const emailErrorMessage = computed(() => {
             return emailError.value !== '' ? emailError.value : '';
-        };
+        });
         // Валидация адреса электронной почты
         const validateEmail = (email) => {
             const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -73,7 +73,7 @@ export default {
                     <input v-model.trim="email" placeholder="Enter Your Email" type="text" class="search-field">
 
                     <input type="submit" value="Subscribe" class="search-btn">
-                    <span v-if="emailError" class="error-message">{{ emailErrorMessage.value }}</span>
+                    <span v-if="emailError" class="error-message">{{ emailErrorMessage }}</span>
 
                 </form>
 

@@ -11,12 +11,17 @@ export default {
         const isValid = computed(() => {
             return store.state.isValid;
         });
+
+
         const closed = () => {
             //store.dispatch("hideAlert");
             store.commit('setIsValid', false);
-            alertRef.value.classList.remove("show");
+            if (alertRef.value) {
+                alertRef.value.classList.remove("show");
+            }
             // Используем реф для доступа к DOM элементу
         };
+
         watch(isValid, (newValue) => {
             if (newValue) {
                 console.log(isValid.value);
@@ -38,7 +43,7 @@ export default {
 </script>
    
 <template>
-    <div @click="closed" v-if="isValid" class="alert" :class="{ show: isValid }">
+    <div ref="alertRef" @click="closed" v-if="isValid" class="alert" :class="{ show: isValid }">
         <p class="alert-title">Сообщение отправлено </p>
     </div>
 </template >
