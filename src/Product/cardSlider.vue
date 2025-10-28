@@ -1,112 +1,112 @@
 <script>
-import { ref,computed,onMounted,onBeforeUnmount} from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
 import filterProduct from './filterProduct.vue';
 import textProduct from './textProduct.vue';
-import Swiper from 'swiper';
+//import Swiper from 'swiper';
+//import 'swiper/swiper-bundle.css';
 export default {
-name: 'cardSlider',
-components:{
-filterProduct,textProduct},
-setup() {
-const store = useStore();
-const swiper=ref(null);
-const current=ref(0);
-const filteredCards=computed(()=>{
-return store.getters.cards;
+  name: 'cardSlider',
+  components: {
+    filterProduct, textProduct
+  },
+  setup() {
+    const store = useStore();
+    const swiperInstance = ref(null); // для хранения экземпляра Swiper
+    const current = ref(0);
+    const filteredCards = computed(() => store.getters.cards);
+    const card = computed(() => {
+      return filteredCards.value[current.value];
     });
-const card=computed(()=>{
-return filteredCards.value[current.value] || {};
-    });
-  
-onMounted(()=>{
-const el = swiper.value.$refs.mySwiper;
-    // Инициализация Swiper (тач/перелистывание включены по умолчанию)
-    swiper.value = new Swiper(el, {
-      slidesPerView: 1,
-      spaceBetween: 16,
-      loop: false,
-      grabCursor: true,
-      threshold: 20,
-      touchRatio: 1,
-      simulateTouch: true,
-      pagination: { el: el.querySelector('.swiper-pagination'), clickable: true },
-      navigation: {
-        nextEl: el.querySelector('.swiper-button-next'),
-        prevEl: el.querySelector('.swiper-button-prev')
-      },
-      on: {
-        slideChange: () => {
-          const idx = (swiper.value.realIndex !== undefined) ? swiper.value.realIndex : swiper.value.activeIndex;
-current.value = idx;
 
-          //this.$emit("change-card", this.card);
-          //передаем к родителю
+    onMounted(() => {
+      const el = document.querySelector('.swiper-container'); // Получаем элемент контейнера
+      swiperInstance.value = new Swiper(el, {
+        slidesPerView: 1,
+        spaceBetween: 16,
+        loop: false,
+        grabCursor: true,
+        threshold: 20,
+        touchRatio: 1,
+        simulateTouch: true,
+        pagination: { el: el.querySelector('.swiper-pagination'), clickable: true },
+        navigation: {
+          nextEl: el.querySelector('.swiper-button-next'),
+          prevEl: el.querySelector('.swiper-button-prev')
+        },
+        on: {
+          slideChange: () => {
+            current.value = swiperInstance.value.realIndex || swiperInstance.value.activeIndex;
+          }
         }
+      });
+      // начальный индекс
+      current.value = swiperInstance.value.realIndex !== undefined ? swiperInstance.value.realIndex : 0;
+      // this.$emit("change-card", this.card);
+    });
+
+    onBeforeUnmount(() => {
+      if (swiperInstance.value && typeof swiperInstance.value.destroy === 'function') {
+        swiperInstance.value.destroy(true, true);
+        swiperInstance.value = null;
       }
     });
-    // начальный индекс
-current.value = swiper.realIndex.value !== undefined ?swiper.value.realIndex : swiper.value.activeIndex;
-    // this.$emit("change-card", this.card);
-  });
 
-onBeforeUnmount(()=>{
-if(swiper.value && typeof swiper.value.destroy === 'function') {
-swiper.value.destroy(true, true);
-swiper.value = null;
-    }
-  });
-
-const goNext=()=>{
-  if (swiper.value) swiper.value.slideNext();
+    const goNext = () => {
+      if (swiperInstance.value) swiperInstance.value.slideNext();
     };
-    const goPrev=()=>{
-      if (swiper.value) swiper.value.slidePrev();
+    const goPrev = () => {
+      if (swiperInstance.value) swiperInstance.value.slidePrev();
     };
     // page — 0-based индекс
-    const goToPageSlider=(page)=>{
-      if (!swiper.value || !filteredCards.value.length) return;
-const safePage = Math.max(0, Math.min(page,filteredCards.value.length - 1));
-swiper.value.slideTo(safePage);
+    const goToPageSlider = (page) => {
+      if (!swiperInstance.value || !filteredCards.value.length) return;
+      const safePage = Math.max(0, Math.min(page, filteredCards.value.length - 1));
+      swiperInstance.value.slideTo(safePage);
     };
-return{
-swiper,
-current,
-filteredCards,
-card,
-goNext,
-goPrev,
-goToPageSlider,
-};
-},
+    return {
+      swiperInstance,
+      current,
+      filteredCards,
+      card,
+      goNext,
+      goPrev,
+      goToPageSlider,
+    };
+  },
 };
 </script>
-  <template>
+<template>
   <div>
     <div>
-<div class="swiper-container" ref="mySwiper">
-<div class="swiper-wrapper">
-<div class="swiper-slide" v-for="(s, i) in filteredCards" :key="i">
-<img  class="item-card__image" :src="s.image" alt="">
-</div>
+      <div class="swiper-container" ref="mySwiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide" v-for="(s, i) in filteredCards" :key="i">
+            <img class="item-card__image" :src="s.image" alt="">
+          </div>
 
-</div>
+        </div>
 
-      <!-- Пагинация и стрелки -->
-<div class="swiper-pagination"></div>
-<div class="swiper-button-prev"></div>
-<div class="swiper-button-next"></div>
-</div>
+        <!-- Пагинация и стрелки -->
+        <div class="swiper-pagination swiper-pagination-clickable swiper-pagination-bulle"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </div>
 
- <div class="controls" style="margin-top:12px;">
+      <div class="controls" style="margin-top:12px;">
         <button @click="goPrev">Prev</button>
         <button @click="goNext">Next</button>
         <button @click="goToPageSlider(0)">To first</button>
         <span>Current: {{ current + 1 }} / {{ filteredCards.length }}</span>
       </div>
     </div>
-<textProduct :card="card"></textProduct>
-    
-    
-    </div>
+    <textProduct :card="card"></textProduct>
+
+
+  </div>
 </template>
+<style scoped>
+.swiper-slide {
+  height: 424px;
+}
+</style>

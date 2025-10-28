@@ -1,109 +1,106 @@
+
 <script>
-import { computed } from 'vue';
+alert('filterProduct')
+import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
-import cardSlider from './cardSlider.vue';
-import cat from './cat.vue';
 export default {
-    name: 'promoProduct',
-    components: { cardSlider, cat },
-    setup() {
+    name: 'filterProduct',
+    props: {
+        card: {
+            type: Object,
+            required: true,
+        }
+    },
+    setup(props) {
         const store = useStore();
+        const drop = ref(null);
+        const selectedColor = ref("White");
+        const selectedSize = ref("M");
+        const localQuantity = ref(1);
 
+        const increaseQuantity = () => {
+            if (props.card && props.card.quantity !== undefined) {
+                localQuantity.value++;
+                updateCardQuantity();
+            }
+        };
+        const decreaseQuantity = () => {
+            if (props.card && localQuantity.value > 1) {
+                localQuantity.value--;
+                updateCardQuantity();
+            }
+        };
+        const onInputChange = (event) => {
+            const newQuantity = parseInt(event.target.value);
+            if (!isNaN(newQuantity) && newQuantity >= 1) {
+                localQuantity.value = newQuantity;
+                updateCardQuantity();
+            } else {
+                localQuantity.value = 1; updateCardQuantity();
+            }
+        };
+        const updateCardQuantity = () => {
+            if (props.card) {
+                store.dispatch("increaseQuantity", {
+                    quantity: localQuantity.value,
+                    currentImage: props.card.id
+                })
+            }
+        };
+        const changeColor = (color) => {
+            selectedColor.value = color.value;
+            drop.value = false;
+        };
 
+        const changeSize = (size) => {
+            selectedSize.value = size.value;
+            drop.value = null;
+        };
 
+        const addToCard = () => {
+            // Проверка на существование card перед использованием его id
+            if (props.card) {
+                store.dispatch("addToCard", {
+                    currentImage: props.card.id,
+                    color: selectedColor.value,
+                    size: selectedSize.value,
+                    quantity: localQuantity.value
+                });
+            } else {
+                console.error("Card object is undefined in addToCard method.");
+            }
+        };
 
-        const filterProduct = {
-            props: {
-                card: {
-                    type: Object,
-                    required: true,
-                }
-            },
-            data() {
-                return {
-                    drop: null,
-                    selectedColor: "White",
-                    selectedSize: "M",
-                    localQuantity: 1,
-                };
-            },
-            computed: {
-                //drop(){
-                //return this.$store.state.drop;}
-            },
-            methods: {
-                increaseQuantity() {
-                    if (this.card && this.card.quantity !== undefined) {
-                        this.localQuantity++;
-                        this.updateCardQuantity();
+        watch(() => props.card, (newCard) => {
+            // Синхронизируем quantity, когда card меняется
+            if (newCard && newCard.quantity) {
+                localQuantity.value = newCard.quantity;
+            } else {
+                localQuantity.value = 1;
+                // Устанавливаем значение по умолчанию, если quantity не определено
+            }
+        },
+            {
+                immediate: true, // Обновляем сразу, при первой загрузке
+            });
 
-                    }
-                },
-                decreaseQuantity() {
-                    if (this.card && this.card.quantity > 1) {
-                        this.localQuantity--;
-                        this.updateCardQuantity();
-                    }
-                },
-                onInputChange(event) {
-                    const newQuantity = parseInt(event.target.value);
-                    if (!isNaN(newQuantity) && newQuantity >= 1) {
-                        this.localQuantity = newQuantity;
-                        this.updateCardQuantity();
-                    } else {
-                        this.localQuantity = 1; this.updateCardQuantity();
-                    }
-                },
-                updateCardQuantity() {
-                    if (this.card) {
-                        this.$store.dispatch("increaseQuantity", {
-                            quantity: this.localQuantity,
-                            currentImage: this.card.id
-                        })
-                    }
-                },
-
-
-                changeColor(color) {
-                    this.selectedColor = color;
-                    this.drop = false;
-
-                },
-
-                changeSize(size) {
-                    this.selectedSize = size;
-                    this.drop = null;
-                },
-
-                addToCard() {
-                    // Проверка на существование card перед использованием его id
-                    if (this.card) {
-                        this.$store.dispatch("addToCard", {
-                            currentImage: this.card.id,
-                            color: this.selectedColor,
-                            size: this.selectedSize,
-                            quantity: this.localQuantity
-                        });
-                    } else {
-                        console.error("Card object is undefined in addToCard method.");
-                    }
-                }
-            },
-            watch: {
-                // Синхронизируем quantity, когда card меняется
-                card: {
-                    handler(newCard) {
-                        if (newCard && newCard.quantity) {
-                            this.localQuantity = newCard.quantity;
-                        } else {
-                            this.localQuantity = 1;
-                            // Устанавливаем значение по умолчанию, если quantity не определено
-                        }
-                    },
-                    immediate: true, // Обновляем сразу, при первой загрузке
-                },
-            };
+        return {
+            drop,
+            selectedColor,
+            selectedSize,
+            localQuantity,
+            increaseQuantity,
+            decreaseQuantity,
+            onInputChange,
+            updateCardQuantity,
+            changeColor,
+            changeSize,
+            addToCard
+        };
+    },
+};
 </script>
+
 <template>
     <div>
 
@@ -159,7 +156,8 @@ export default {
                                     id="orange-color" type="radio">
                                 <span class=" radio-icon">
                                 </span>
-                                <span :class="{ red: selectedColor === 'Red' }" class="checkbox checkbox-text red">RED</span>
+                                <span :class="{ red: selectedColor === 'Red' }"
+                                    class="checkbox checkbox-text red">RED</span>
                             </label>
                         </div>
                     </div>
@@ -261,7 +259,4 @@ export default {
             </button>
         </div>
     </div>
-    </div>
-
-
-</div></template>
+</template>

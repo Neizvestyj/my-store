@@ -1,4 +1,5 @@
 <script>
+alert('textpRODUCT')
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 import filterProduct from './filterProduct.vue';
@@ -33,7 +34,7 @@ export default {
                 <h1 class="center-about-h1">WOMEN COLLECTION</h1>
             </div>
             <div class="center-line">
-                <img src="img/linepink.svg" alt="linepink"> </img>
+                <img src="img/linepink.svg" alt="linepink">
             </div>
             <div>
                 <h2 class="center-about-h2">MOSCHINO CHEAP AND CHIC</h2>

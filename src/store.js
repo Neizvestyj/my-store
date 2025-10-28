@@ -145,6 +145,21 @@ const store = createStore({
         setIsValid(state, value) {
             state.isValid = value
         },
+        // компонент Product
+        addToCard(state, payload) {
+            const { currentImage, color, size, quantity } = payload;
+            const productToAdd = state.filteredCards.find(item => item.id === currentImage);
+
+            const existingProduct = state.cart.find(item => item.id === productToAdd.id);
+            if (existingProduct) {
+                existingProduct.quantity++;
+                state.sum += existingProduct.price;
+            } else {
+                const newProduct = { ...productToAdd, quantity, color, size };
+                state.cart.push(newProduct);
+                state.sum += newProduct.price * newProduct.quantity;
+            }
+        },
 
     },
 
@@ -228,6 +243,10 @@ const store = createStore({
         },
         setIsValid({ commit }) {
             commit("setIsValid", false)
+        },
+        // компонент Product
+        addToCard({ commit }, payload) {
+            commit("addToCard", payload);
         },
 
     },

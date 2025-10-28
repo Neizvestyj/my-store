@@ -13,6 +13,10 @@ body {
 
 }
 
+.swiper-slide {
+  height: 424px;
+}
+
 .registration-width {
   margin-right: -19px;
 }
