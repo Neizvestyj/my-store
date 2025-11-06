@@ -1,92 +1,81 @@
-<script>
+<script setup>
 import { ref, computed } from 'vue';
-import { useStore } from 'vuex';
-export default {
-    name: "Cart",
-    setup() {
-        const store = useStore();
-        const city = ref("");
-        const state = ref("");
-        const zip = ref("");
-        const emailError = ref("");
-        const del = (idDel) => {
-            store.dispatch("del", idDel)
-        };
-        const buy = () => {
-            store.dispatch("buy");
-        };
-        const submit = (event) => {
-            event.preventDefault();
-            if (isValid.value) {
-                store.dispatch('login');
-                city.value = '';
-                state.value = "";
-                zip.value = "";
-                store.state.isValid.value = true;
-            } else {
-                emailError.value = 'Введите корректный адрес';
-                store.state.isValid = false;
-            }
-        };
-        const clear = () => {
-            alert("clear active"); store.dispatch("clear");
-        };
-        const increaseQuantity = (card) => {
-            card.quantity++; store.dispatch("increaseQuantity", { quantity: card.quantity, currentImage: card.id })
-        };
-
-        const decreaseQuantity = (card) => {
-            if (card.quantity > 1) {
-                card.quantity--; store.dispatch("decreaseQuantity", { quantity: card.quantity, currentImage: card.id })
-            }
-        };
-        const onInputChange = (card, event) => {
-            const value = parseInt(event.target.value);
-            if (!isNaN(value) && value >= 1) {
-                card.quantity = value;
-                store.dispatch("increaseQuantity", { quantity: card.quantity, currentImage: card.id })
-            } else {
-                card.quantity = 1; store.dispatch("increaseQuantity", { quantity: card.quantity, currentImage: card.id })
-            }
-        };
-
-        const cart = computed(() => {
-            if (!store) {
-                console.error("Store is not available");
-                return [];
-            }
-            return store.state.cart;
-        });
-
-        const isValid = computed(() => {
-            return city.value !== "" && state.value !== '' && zip.value !== '';
-        });
-
-        const grandTotal = computed(() => {
-            return store.state.sum
-        });
-
-        return {
-            city,
-            state,
-            zip,
-            del,
-            buy,
-            isValid,
-            submit,
-            cart,
-            grandTotal,
-            clear,
-            increaseQuantity,
-            decreaseQuantity,
-            onInputChange,
-            emailError
-        };
-    },
-
-
+import { useStore } from '../store';
+const store = useStore();
+const city = ref("");
+const stateInput = ref("");
+const zip = ref("");
+const emailError = ref("");
+const del = (idDel) => {
+    store.del(idDel)
+};
+//Покупка товра 
+const buy = () => {
+    store.buy();
+};
+//Обработка формы отправки
+const submit = (event) => {
+    event.preventDefault();
+    if (isValid.value) {
+        store.login();
+        city.value = '';
+        stateInput.value = "";
+        zip.value = "";
+        store.isValid = true;
+    } else {
+        emailError.value = 'Введите корректный адрес';
+        store.isValid = false;
+    }
+};
+//Очистка корщины
+const clear = () => {
+    alert("clear active"); store.clear();
 };
 
+//Увилечение колличество товра
+const increaseQuantity = (card) => {
+    card.quantity++; store.increaseQuantity({
+        quantity: card.quantity, currentImage: card.id
+    })
+};
+
+//Уменьшение колличество товара
+const decreaseQuantity = (card) => {
+    if (card.quantity > 1) {
+        card.quantity--; store.decreaseQuantity({
+            quantity: card.quantity, currentImage: card.id
+        })
+    }
+};
+
+//Обработка изминения ввода колличества
+const onInputChange = (card, event) => {
+    const value = parseInt(event.target.value);
+
+    if (!isNaN(value) && value >= 1) {
+        card.quantity = value; store.increaseQuantity({
+            quantity: card.quantity, currentImage: card.id
+        })
+    } else {
+        card.quantity = 1; store.increaseQuantity({
+            quantity: card.quantity, currentImage: card.id
+        })
+    }
+};
+//Выч-ое свойство доя корзины
+const cart = computed(() => {
+    if (!store) {
+        console.error("Store is not available");
+        return [];
+    }
+    return Array.isArray(store.cart) ? store.cart : [];
+});
+//Валидация полей формы
+const isValid = computed(() =>
+    city.value !== "" && stateInput.value !== '' && zip.value !== '');
+//Вычисляемое свойство для суммы
+const grandTotal = computed(() =>
+    store.sum);
 </script>
 
 <template>
@@ -155,7 +144,8 @@ export default {
                         <h4 class="form-cart-shop"> SHIPPING ADRESS</h4>
                         <input v-model.trim="city" class="form-cart-shop_i bangladesh" type="text" name="city"
                             placeholder="Bangladesh">
-                        <input v-model.trim="state" class="form-cart-shop_i" type="text" name="state" placeholder="State">
+                        <input v-model.trim="stateInput" class="form-cart-shop_i" type="text" name="state"
+                            placeholder="State">
                         <input v-model.trim="zip" class="form-cart-shop_i" type="text" name="zip"
                             placeholder="Postcode / Zip">
                         <input v-if="isValid" class="form-cart-shop_btn" type="submit" value="GET A QUOTE">
@@ -164,7 +154,7 @@ export default {
                     <div class="proceed">
                         <div class="proceed-sub">
                             <p class="sub">SUB TOTAL</p>
-                            <p class="sub_mini">$ {{ this.$store.state.sum }}</p>
+                            <p class="sub_mini">$ {{ store.sum }}</p>
                         </div>
                         <div class="proceed-grand">
                             <p class="grand">GRAND TOTAL</p>

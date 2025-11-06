@@ -1,7 +1,7 @@
 <script>
 import Alert from '../Alert.vue'
 import { ref, computed } from 'vue';
-import { useStore } from 'vuex';
+import { useStore } from '../../store';
 export default {
     name: 'Feedback',
     components: { Alert },

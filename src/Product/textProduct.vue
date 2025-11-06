@@ -1,5 +1,5 @@
 <script>
-alert('textpRODUCT')
+
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 import filterProduct from './filterProduct.vue';
@@ -7,21 +7,20 @@ import filterProduct from './filterProduct.vue';
 export default {
     name: 'textProduct',
     components: { filterProduct },
-    props: {
-        card: {
-            type: Object,
-            required: true,
-        }
-    },
+    props: { card: { type: Object, required: true, }, },
     setup(props) {
         const store = useStore();
-        const grandTotal = computed(() => {
-            return store.state.sum
-        });
+        const grandTotal = computed(() => store.state.sum
+        );
+        const cardCurrent = computed(() =>
+            store.getters.cardCurrent
+
+        );
 
         return {
             grandTotal,
-            card: props.card,
+            // card: props.card,
+
         };
     },
 };
@@ -47,11 +46,11 @@ export default {
                     competencies rather than exceptional portals. </p>
             </div>
             <div>
-                <p class="sale561">$ {{ grandTotal }}</p>
+                <p class="sale561">$ {{ card.price }}</p>
             </div>
             <hr class="hr">
 
-            <filter-product :card="card"></filter-product>
+            <filter-product></filter-product>
         </div>
     </div>
 </template>

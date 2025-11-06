@@ -1,19 +1,9 @@
-<script>
-import { ref, computed } from 'vue';
-import { useStore } from 'vuex';
-export default {
-    name: 'Basket',
-    setup() {
-        const store = useStore(); // Используем Vuex Store
-        const itemCount = computed(() => {
-            return store.state.cart.length;
-        });
-        return {
-            itemCount,
-
-        };
-    },
-};
+<script setup>
+import { computed } from 'vue';
+import { useStore } from '../store';
+const store = useStore();
+const itemCount = computed(() =>
+    store.cart.length);
 </script>
 <template>
     <div>

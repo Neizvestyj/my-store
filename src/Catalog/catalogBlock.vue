@@ -1,40 +1,34 @@
-<script>
+<script setup>
+alert("catalogBlock")
+import { computed } from 'vue';
+import { useStore } from '../store';
 
-import { ref, computed } from 'vue';
-import { useStore } from 'vuex';
-export default {
-    name: "catalogBlock",
-    setup() {
-        const store = useStore();
-        const add = (cardId) => {
-            console.log("Adding product with ID:", cardId);
-            const payload = {
-                currentImage: cardId,
-                color: "white",
-                size: "m",
-                quantity: 1
-            };
-            console.log("Payload:", payload); // Логируем полезный объект для дальнейшей отладки
-            store.dispatch('add', payload);
-        };
-        const paginatedCatalog = computed(() => {
-            return store.getters.paginatedCatalog;
-        });
-        return {
 
-            add,
-            paginatedCatalog
-        }
-    },
+const store = useStore();
+console.log("Store доступен:", store);
+const add = (cardId) => {
+    console.log("Adding product with ID:", cardId);
+    const payload = {
+        currentImage: cardId,
+        color: "white",
+        size: "m",
+        quantity: 1
+    };
+    console.log("Payload:", payload); // Логируем полезный объект для дальнейшей отладки
+    store.add(payload);
 };
+
+const paginatedCatalog = computed(() => {
+    return store.getPaginatedCatalog; // Проверьте, что это свойство существует
+});
+
+
+console.log("Paginated Catalog:", store.getPaginatedCatalog.value);
 
 </script>
 <template>
     <div>
-
         <div class="card-block">
-
-
             <figure v-for="card in paginatedCatalog" :key="card.id" class="item-card">
 
                 <img class="item-card__image" :src="card.image" alt="">
@@ -56,9 +50,9 @@ export default {
 
 
                 <p class="item-card_price">$ {{ card.price }}</p>
-
             </figure>
         </div>
+
 
 
     </div>

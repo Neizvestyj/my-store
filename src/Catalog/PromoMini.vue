@@ -1,21 +1,12 @@
-<script>
+
+<script setup>
+alert("promomini")
 
 import { ref, computed } from 'vue';
-import { useStore } from 'vuex';
+import { useStore } from '../store';
 import navFilter from './navFilter.vue';
-import catalogBlock from './catalogblock.vue';
+import catalogBlock from './catalogBlock.vue';
 import pagination from './pagination.vue';
-export default {
-    name: "PromoMini",
-    components: {
-        navFilter,
-        catalogBlock,
-        pagination
-    },
-    setup() {
-        return {};
-    }
-};
 </script>
 <template>
     <div>

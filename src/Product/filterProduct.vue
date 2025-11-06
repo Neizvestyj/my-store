@@ -1,31 +1,30 @@
 
 <script>
-alert('filterProduct')
 import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 export default {
     name: 'filterProduct',
-    props: {
-        card: {
-            type: Object,
-            required: true,
-        }
-    },
-    setup(props) {
+    // props: { card: {type: Object,required: true }, },
+    setup() {
         const store = useStore();
         const drop = ref(null);
         const selectedColor = ref("White");
         const selectedSize = ref("M");
         const localQuantity = ref(1);
+        const currentImage = ref(0);
+        const cardCurrent = computed(() => {
+            return store.getters.cardCurrent || {}
+
+        });
 
         const increaseQuantity = () => {
-            if (props.card && props.card.quantity !== undefined) {
+            if (cardCurrent.value && cardCurrent.value.quantity !== undefined) {
                 localQuantity.value++;
                 updateCardQuantity();
             }
         };
         const decreaseQuantity = () => {
-            if (props.card && localQuantity.value > 1) {
+            if (localQuantity.value > 1) {
                 localQuantity.value--;
                 updateCardQuantity();
             }
@@ -36,49 +35,49 @@ export default {
                 localQuantity.value = newQuantity;
                 updateCardQuantity();
             } else {
-                localQuantity.value = 1; updateCardQuantity();
+                localQuantity.value = 1;
             }
+            updateCardQuantity();
         };
         const updateCardQuantity = () => {
-            if (props.card) {
+            if (cardCurrent.value && cardCurrent.value.id) {
                 store.dispatch("increaseQuantity", {
                     quantity: localQuantity.value,
-                    currentImage: props.card.id
-                })
+                    currentImage: cardCurrent.value.id
+                });
             }
         };
         const changeColor = (color) => {
-            selectedColor.value = color.value;
+            selectedColor.value = color;
             drop.value = false;
+            console.log(selectedColor.value)
         };
 
         const changeSize = (size) => {
-            selectedSize.value = size.value;
+            selectedSize.value = size;
             drop.value = null;
+            console.log(selectedSize.value)
         };
 
         const addToCard = () => {
             // Проверка на существование card перед использованием его id
-            if (props.card) {
+            const currentCard = cardCurrent.value; // Получаем текущее значение cardCurrent
+            if (currentCard && currentCard.id) {
                 store.dispatch("addToCard", {
-                    currentImage: props.card.id,
+                    currentImage: currentCard.id,
                     color: selectedColor.value,
                     size: selectedSize.value,
                     quantity: localQuantity.value
                 });
+                console.log(" 2 Current image ID:", currentCard.id);
             } else {
-                console.error("Card object is undefined in addToCard method.");
+                console.error(" 3 Card object is undefined in addToCard method.");
             }
         };
 
-        watch(() => props.card, (newCard) => {
+        watch(cardCurrent, (newCard) => {
             // Синхронизируем quantity, когда card меняется
-            if (newCard && newCard.quantity) {
-                localQuantity.value = newCard.quantity;
-            } else {
-                localQuantity.value = 1;
-                // Устанавливаем значение по умолчанию, если quantity не определено
-            }
+            localQuantity.value = newCard.quantity !== undefined ? newCard.quantity : 1;
         },
             {
                 immediate: true, // Обновляем сразу, при первой загрузке
@@ -95,7 +94,8 @@ export default {
             updateCardQuantity,
             changeColor,
             changeSize,
-            addToCard
+            addToCard,
+            cardCurrent,
         };
     },
 };
@@ -152,7 +152,7 @@ export default {
 
 
                             <label class="custom-radio">
-                                <input @change="changeColor('Red')" value="orange" name="option" class="checkbox-q"
+                                <input @change="changeColor('Red')" value="Red" name="option" class="checkbox-q"
                                     id="orange-color" type="radio">
                                 <span class=" radio-icon">
                                 </span>
@@ -234,7 +234,8 @@ export default {
                 </summary>
 
                 <div v-if="drop === 3" class="quantity-selector-product">
-                    <button class="button-decrease" @click="decreaseQuantity()" :disabled="card.quantity <= 1">-</button>
+                    <button class="button-decrease" @click="decreaseQuantity()"
+                        :disabled="cardCurrent.quantity <= 1">-</button>
 
                     <input class="quantityProduct" type="number" v-model.number="localQuantity"
                         @input="onInputChange($event)" min="1" />

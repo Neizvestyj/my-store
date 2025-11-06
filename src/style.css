@@ -1833,8 +1833,10 @@ a:hover {
   display: -ms-flexbox;
   display: flex;
   margin-bottom: 41px;
-  -webkit-box-shadow: 17px 19px 24px;
-  box-shadow: 17px 19px 24px;
+  -webkit-box-shadow: 15px 16px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 15px 16px 10px rgba(0, 0, 0, 0.3);
+
+
 }
 
 .mango-scale {

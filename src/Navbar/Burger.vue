@@ -1,71 +1,55 @@
-<script>
+<script setup>
+
 import { computed, nextTick, getCurrentInstance, onMounted, onBeforeUnmount } from 'vue';
-import { useStore } from 'vuex';
+import { useStore } from '../store';
+const store = useStore();
+const isOpen = computed(() => store.isOpen);
+const { proxy } = getCurrentInstance();
+const toggleMenu = (event) => {
+    if (event && event.stopPropagation) event.stopPropagation();
+    store.toggleMenu();
 
-export default {
-    name: 'Burger',
-    setup() {
-        const store = useStore();
-        const isOpen = computed(() => store.state.isOpen);
-        const { proxy } = getCurrentInstance();
-
-        const toggleMenu = (event) => {
-            if (event && event.stopPropagation) event.stopPropagation();
-            store.dispatch("toggleMenu");
-
-            // Переключение состояния
-            if (isOpen.value) {
-                nextTick(() => {
-                    const menu = proxy.$refs.menuRef;
-                    if (menu) {
-                        menu.focus && menu.focus();
-                    }
-                });
-            }
-        };
-
-        const closeMenu = () => {
-            store.dispatch("closeMenu");
-        };
-
-        const onOutside = (e) => {
+    // Переключение состояния
+    if (isOpen.value) {
+        nextTick(() => {
             const menu = proxy.$refs.menuRef;
-            if (!menu) return;
-
-            // Проверка был ли клик вне меню 
-            if (!menu.contains(e.target)) {
-                closeMenu();
+            if (menu) {
+                menu.focus && menu.focus();
             }
-        };
-
-        const onKeydown = (e) => {
-            if (e.key === "Escape" || e.key === "Esc") {
-                closeMenu();
-            }
-        };
-
-        onMounted(() => {
-            document.addEventListener("click", onOutside);
-            document.addEventListener("touchstart", onOutside);
-            document.addEventListener("keydown", onKeydown);
         });
-
-        // Удаляем обработчики перед размонтированием
-        onBeforeUnmount(() => {
-            document.removeEventListener("click", onOutside);
-            document.removeEventListener("touchstart", onOutside);
-            document.removeEventListener("keydown", onKeydown);
-        });
-
-        return {
-            isOpen,
-            toggleMenu,
-            closeMenu,
-            onOutside,
-            onKeydown
-        };
-    },
+    }
 };
+
+const closeMenu = () => {
+    store.closeMenu();
+};
+
+const onOutside = (e) => {
+    const menu = proxy.$refs.menuRef;
+    if (!menu) return;
+
+    // Проверка был ли клик вне меню 
+    if (!menu.contains(e.target)) {
+        closeMenu();
+    }
+};
+
+const onKeydown = (e) => {
+    if (e.key === "Escape" || e.key === "Esc") {
+        closeMenu();
+    }
+};
+
+onMounted(() => {
+    document.addEventListener("click", onOutside); document.addEventListener("touchstart", onOutside); document.addEventListener("keydown", onKeydown);
+});
+
+// Удаляем обработчики перед размонтированием
+onBeforeUnmount(() => {
+    document.removeEventListener("click", onOutside);
+    document.removeEventListener("touchstart", onOutside);
+    document.removeEventListener("keydown", onKeydown);
+});
 </script>
 
 
@@ -97,7 +81,7 @@ export default {
                     </label>
                     <p class="input-menu">MENU</p>
 
-                    <router-link to="promoProduct" @click.native="closeMenu" class="input-summary"> NEW ARRIVALS
+                    <router-link to="/Product/promoProduct" @click.native="closeMenu" class="input-summary"> NEW ARRIVALS
                     </router-link>
 
                     <details>

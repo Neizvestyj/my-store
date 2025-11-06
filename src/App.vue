@@ -1,16 +1,21 @@
 
-<script>
+<script setup>
+import { onMounted } from 'vue';
+import { useStore } from './store';
 import Navbar from './navbar/Navbar.vue'
 import Advantages from './components/Footer/Advantages.vue'
 import Feedback from './components/Footer/Feedback.vue'
 import Footer from './components/Footer/Footer.vue'
-export default {
-  components: { Navbar, Advantages, Feedback, Footer },
-}
+const store = useStore();
+//components: { Navbar, Advantages, Feedback, Footer },
+onMounted(() => {
+  store.fetchCards();
+});
+
 </script>
 <template>
   <div class="overflow-hidden">
-    <Navbar></Navbar>
+    <Navbar />
     <router-view></router-view>
     <aside>
       <Advantages />

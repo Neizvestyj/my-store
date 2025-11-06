@@ -1,7 +1,7 @@
 <script>
-alert('promoProduct')
+
 import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { useStore } from '../store';
 import cardSlider from './cardSlider.vue';
 import cat from './cat.vue';
 export default {

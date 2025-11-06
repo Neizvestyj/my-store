@@ -1,57 +1,43 @@
-<script>
+<script setup>
 import { ref, computed } from 'vue';
-import { useStore } from 'vuex';
-
-export default {
-    name: 'Login',
-    setup() {
-        const store = useStore(); // Используем Vuex Store
+import { useStore } from '../store';
+const store = useStore(); 
         const email = ref("");
         const password = ref("");
         const gender = ref("");
         const firstName = ref("");
         const lastName = ref("");
         const emailError = ref("");
-        const isValid = computed(() => {
-            return validateEmail(email.value) && email.value !== '' && password.value !== '' && firstName.value !== '' && lastName.value !== '' && gender.value !== '';
-        });
-        const emailErrorMessage = computed(() => {
-            return this.emailError !== '' ? this.emailError : '';
-        });
-        const validateEmail = (email) => {
-            const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            return re.test(String(email).toLowerCase());
-        };
-        const submit = (event) => {
-            event.preventDefault();
-            if (isValid.value) {
-                store.dispatch('login');
-                emailError.value = '';
-                email.value = "";
-                password.value = '';
-                gender.value = '';
-                firstName.value = '';
-                lastName.value = '';
-                store.state.isValid.value = true;
-            } else {
-                emailError.value = 'Введите корректный адрес электронной почты';
-                store.state.isValid.value = false;
-            }
-        };
-        return {
-            email,
-            password,
-            gender,
-            firstName,
-            lastName,
-            emailError,
-            isValid,
-            emailErrorMessage,
-            validateEmail,
-            submit,
-        }
-    }
-}
+//Вычисляемое свойство для проверки валидности всех полей 
+const isValid = computed(() => {
+return validateEmail(email.value) && email.value !== '' && password.value !== '' && firstName.value !== '' && lastName.value !== '' && gender.value !== '';
+});
+//Сообщение об ошибке email
+const emailErrorMessage = computed(()=>emailError.value !== '' ?emailError.value : ''
+);
+//Функция для валидации
+const validateEmail = (email) => {
+const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+return re.test(String(email).toLowerCase());
+};
+//Функция отправки данных
+const submit = (event) => {
+event.preventDefault();
+if(isValid.value) {
+store.login();
+emailError.value = '';
+email.value = "";
+password.value = '';
+gender.value = '';
+firstName.value = '';
+lastName.value = '';
+store.isValid.value = true;
+ } else {
+emailError.value = 'Введите корректный адрес электронной почты';
+store.isValid.value = false;
+  }
+};      
+  
 </script>
 <template>
     <div>

@@ -1,41 +1,30 @@
-<script>
+
+
+<script setup>
+alert('p')
 import { ref, computed } from 'vue';
-import { useStore } from 'vuex';
-export default {
-    name: "Promo",
-    setup() {
-        const store = useStore();
-        const currentImage = ref(null);
-        const color = ref("white");
-        const size = ref("m");
-        const quantity = ref(1);
-        const add = (cardId) => {
-            console.log("Adding product with ID:", cardId);
-            const payload = {
-                currentImage: cardId,
-                color: color.value,
-                size: size.value,
-                quantity: quantity.value
-            };
-            console.log("Payload:", payload); // Логируем полезный объект для дальнейшей отладки
-            store.dispatch('add', payload);
-        };
+import { useStore } from './store';
 
-        const filteredCards = computed(() => {
-            return store.state.filteredCards || [];
-        });
-        return {
-            currentImage,
-            color,
-            size,
-            quantity,
-            store,
-            add,
-            filteredCards,
-        };
-    }
+const store = useStore();
+const currentImage = ref(null);
+const color = ref("white");
+const size = ref("m");
+const quantity = ref(1);
+const add = (cardId) => {
+    console.log("Adding product with ID:", cardId);
+    const payload = {
+        currentImage: cardId,
+        color: color.value,
+        size: size.value,
+        quantity: quantity.value
+    };
+    console.log("Payload:P", payload); // Логируем полезный объект для дальнейшей отладки
+    store.add(payload);
 };
-
+const filteredCards = computed(() => {
+    return store.filteredCards || [];
+});
+//onMounted(() => {store.fetchCards(); // Не забудьте вызвать fetchCards для загрузки данных});
 </script>
 <template>
     <div>

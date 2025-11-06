@@ -110,6 +110,7 @@ const store = new Vuex.Store({
 
       state.filteredCatalog = filteredProducts;
     },
+    //?
     setFilteredCatalog(state, filteredProducts) {
       state.filteredCatalog = filteredProducts;
     },
@@ -118,7 +119,7 @@ const store = new Vuex.Store({
     setCurrentPage(state, page) {
       state.currentPage = page;
     },
-
+    //?
     setCurrentPageSlider(state, page) {
       state.sliderPage = page;
     },
@@ -181,10 +182,10 @@ const store = new Vuex.Store({
       state.isOpen = false;
     },
 
-toggleColor(state) {
+    toggleColor(state) {
       state.drop = !state.drop;
     },
-closeColor(state) {
+    closeColor(state) {
       state.drop = false;
     },
 
@@ -193,15 +194,15 @@ closeColor(state) {
 
 
   actions: {
-onOutside({ commit }, menu) {
-const outsideClickHandler = (event) => {
-//Провереяем не был ли клик в меню
-if(!menu || !menu.contains(event.target)) {
-commit("closeMenu");
-commit("closeColor");
+    onOutside({ commit }, menu) {
+      const outsideClickHandler = (event) => {
+        //Провереяем не был ли клик в меню
+        if (!menu || !menu.contains(event.target)) {
+          commit("closeMenu");
+          commit("closeColor");
           document.removeEventListener("click", outsideClickHandler)
- }
- };
+        }
+      };
       document.addEventListener("click", outsideClickHandler);
     },
 
@@ -214,12 +215,12 @@ commit("closeColor");
     closeMenu({ commit }) {
       commit("closeMenu"); // Вызов мутации для переключения состояния
     },
-toggleColor({ commit }) {
+    toggleColor({ commit }) {
       commit("toggleColor");
-},
-closeColor({ commit }) {
+    },
+    closeColor({ commit }) {
       commit("closeColor");
-},
+    },
     login({ commit }) {
       commit("login")
     },

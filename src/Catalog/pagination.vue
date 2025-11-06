@@ -1,36 +1,22 @@
-<script>
+<script setup>
 import { ref, computed } from 'vue';
-import { useStore } from 'vuex';
-export default {
-    name: "pagination",
-    setup() {
-        const store = useStore();
+import { useStore } from '../store';
 
-        const count = ref(1);
+const store = useStore();
 
-        const totalPages = computed(() => {
-            return store.getters.totalPages;
-        });
+const count = ref(1);
 
-        const currentPage = computed(() => {
-            return store.state.currentPage;
-        });
-
-        const goToPage = (pageNumber) => {
-            if (pageNumber >= 1 && pageNumber <= totalPages.value) {
-                store.dispatch('goToPage', pageNumber);
-            }
-        };
-        return {
-            store,
-            count,
-            goToPage,
-            totalPages,
-            currentPage,
-        };
-    },
+const totalPages = computed(() => {
+    return store.getTotalPages;
+});
+const currentPage = computed(() => {
+    return store.currentPage;
+});
+const goToPage = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages.value) {
+        store.setCurrentPage(pageNumber);
+    }
 };
-
 </script>
 <template>
     <div>

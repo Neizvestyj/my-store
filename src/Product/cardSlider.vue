@@ -1,5 +1,5 @@
 <script>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, } from 'vue';
 import { useStore } from 'vuex';
 import filterProduct from './filterProduct.vue';
 import textProduct from './textProduct.vue';
@@ -15,11 +15,19 @@ export default {
     const swiperInstance = ref(null); // для хранения экземпляра Swiper
     const current = ref(0);
     const filteredCards = computed(() => store.getters.cards);
-    const card = computed(() => {
-      return filteredCards.value[current.value];
+    const card = computed(() => {// карточка !!!!!!!!!!
+      console.log(current.value);
+      // Проверяем, что current.value в пределах допустимых значений
+      if (current.value < 0 || current.value >= filteredCards.value.length) {
+        return {};
+      }
+      const cardItem = filteredCards.value[current.value];
+      console.log(cardItem)
+      return cardItem ? cardItem : {};
     });
 
     onMounted(() => {
+      store.commit('setCurrentCard', card.value);
       const el = document.querySelector('.swiper-container'); // Получаем элемент контейнера
       swiperInstance.value = new Swiper(el, {
         slidesPerView: 1,
@@ -36,7 +44,9 @@ export default {
         },
         on: {
           slideChange: () => {
-            current.value = swiperInstance.value.realIndex || swiperInstance.value.activeIndex;
+            current.value = swiperInstance.value.realIndex //|| swiperInstance.value.activeIndex;
+            store.commit('setCurrentCard', card); // Сохранение текущей карточки в хранилище
+            //или  store.commit('setCurrentCard',filteredCards.value[current.value]);
           }
         }
       });
@@ -53,10 +63,13 @@ export default {
     });
 
     const goNext = () => {
-      if (swiperInstance.value) swiperInstance.value.slideNext();
+      if (swiperInstance.value)
+        swiperInstance.value.slideNext();
+
     };
     const goPrev = () => {
-      if (swiperInstance.value) swiperInstance.value.slidePrev();
+      if (swiperInstance.value)
+        swiperInstance.value.slidePrev();
     };
     // page — 0-based индекс
     const goToPageSlider = (page) => {
@@ -100,7 +113,7 @@ export default {
         <span>Current: {{ current + 1 }} / {{ filteredCards.length }}</span>
       </div>
     </div>
-    <textProduct :card="card"></textProduct>
+    <textProduct v-if="card && card.id" :card="card"></textProduct>
 
 
   </div>
