@@ -1,10 +1,10 @@
 
 <script>
 import { ref, computed, watch } from 'vue';
-import { useStore } from 'vuex';
+import { useStore } from '../store';
 export default {
     name: 'filterProduct',
-    // props: { card: {type: Object,required: true }, },
+    // props: { card: { type: Object, required: true }, },
     setup() {
         const store = useStore();
         const drop = ref(null);
@@ -13,7 +13,7 @@ export default {
         const localQuantity = ref(1);
         const currentImage = ref(0);
         const cardCurrent = computed(() => {
-            return store.getters.cardCurrent || {}
+            return store.getCardCurrent || {}
 
         });
 
@@ -41,7 +41,7 @@ export default {
         };
         const updateCardQuantity = () => {
             if (cardCurrent.value && cardCurrent.value.id) {
-                store.dispatch("increaseQuantity", {
+                store.increaseQuantity({
                     quantity: localQuantity.value,
                     currentImage: cardCurrent.value.id
                 });
@@ -63,7 +63,7 @@ export default {
             // Проверка на существование card перед использованием его id
             const currentCard = cardCurrent.value; // Получаем текущее значение cardCurrent
             if (currentCard && currentCard.id) {
-                store.dispatch("addToCard", {
+                store.addToCard({
                     currentImage: currentCard.id,
                     color: selectedColor.value,
                     size: selectedSize.value,

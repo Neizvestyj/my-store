@@ -1,12 +1,12 @@
 <script>
 import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { useStore } from '../store';
 export default {
     name: 'cat',
     setup() {
         const store = useStore();
         const catalogProduct = computed(() => {
-            return store.getters.catalogProduct;
+            return store.getCatalogProduct;
         });
         return { catalogProduct, };
     }

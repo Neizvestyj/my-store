@@ -1,7 +1,7 @@
 <script>
 
 import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { useStore } from '../store';
 import filterProduct from './filterProduct.vue';
 
 export default {
@@ -10,10 +10,10 @@ export default {
     props: { card: { type: Object, required: true, }, },
     setup(props) {
         const store = useStore();
-        const grandTotal = computed(() => store.state.sum
+        const grandTotal = computed(() => store.sum
         );
         const cardCurrent = computed(() =>
-            store.getters.cardCurrent
+            store.getCardCurrent
 
         );
 

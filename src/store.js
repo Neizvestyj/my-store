@@ -17,8 +17,12 @@ export const useStore = defineStore('store', {
         //для Product
         sliderPage: 1,
         sliderItemsPerPage: 1,
+        cardCurrent: null,
     }),
     actions: {
+        setCurrentCard(card) {
+            this.cardCurrent = card;
+        },
         async fetchCards() {
             try {
                 const response = await fetch('https://raw.githubusercontent.com/Neizvestyj/cardShop/master/data.json');
@@ -53,7 +57,8 @@ export const useStore = defineStore('store', {
         //фильтрация в Catalog
         //компонент navFilter!
         sortFilteredCards({ filter, priceRanges }) {
-            let filteredProducts = [...this.cards];
+            // let filteredProducts = [...this.cards];
+            let filteredProducts = this.cards.slice(); // Используем slice() для создания копии массива 
             // Фильтрация по диапазонам цены
             if (priceRanges.length > 0) {
                 filteredProducts = filteredProducts.filter(item => {
@@ -76,6 +81,10 @@ export const useStore = defineStore('store', {
         toggleMenu() {
             this.isOpen = !this.isOpen;
         },
+        closeMenu(state) {
+            this.isOpen = false;
+        },
+
         //компонент Promo!
         add(payload) {
             if (!payload) { // Проверка, если payload не определен
@@ -153,6 +162,27 @@ export const useStore = defineStore('store', {
         setCurrentPage(page) {
             this.currentPage = page;
         },
+        //компонент Product-filterProduct
+        addToCard(payload) {
+            const { currentImage, color, size, quantity } = payload;
+            if (currentImage == null) {
+
+                console.error(" 4 currentImage is null");
+                return;
+            }
+            console.log(currentImage)
+            const productToAdd = this.filteredCards.find(item => item.id === currentImage);
+
+            const existingProduct = this.cart.find(item => item.id === productToAdd.id);
+            if (existingProduct) {
+                existingProduct.quantity++;
+                state.sum += existingProduct.price;
+            } else {
+                const newProduct = { ...productToAdd, quantity, color, size };
+                this.cart.push(newProduct);
+                this.sum += newProduct.price * newProduct.quantity;
+            }
+        },
     },
     getters: {
         getCards: state => state.cards,
@@ -171,7 +201,7 @@ export const useStore = defineStore('store', {
             return state.filteredCatalog.slice(start, end + 1);
         },
         //компонент Product
-        sliderCatalog(state) {
+        getSliderCatalog(state) {
             const start = (state.sliderPage - 1) * state.sliderItemsPerPage;
             const end = start + state.sliderItemsPerPage;
             return state.filteredCatalog.slice(start, end);

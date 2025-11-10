@@ -1,74 +1,54 @@
-<script>
+<script setup>
 
 import { ref, computed } from 'vue';
 import { useStore } from '../store';
-export default {
-    name: "navFilter",
-    setup() {
-        const store = useStore();
-        const selectedFilter = ref("product");
-        const priceRanges = ref({
-            "$0 - $50": false,
-            "$50 - $100": false,
-            "$100 - $200": false,
-            "Over $200": false,
-        });
-        const drop = ref(null);
 
-        const sortItems = () => {
-            console.log("sortItems", selectedFilter.value)
-            let selectedPriceRanges = Object.entries(priceRanges.value)
-                .filter(([range, isChecked]) => isChecked) // Отбираем только отмеченные диапазоны
-                .map(([range]) => range);
-            // Получаем только названия диапазонов
-            store.dispatch("sortItems", {
-                filter: selectedFilter.value,
-                priceRanges: selectedPriceRanges
-            }).then(() => {
-                console.log("Dispatch completed"); // Подтверждение выполнения действия
-            }).catch(error => {
-                console.error("Error in dispatch:", error); // Логируем ошибки
-            });
-            drop = null
-        };
+const store = useStore();
+const selectedFilter = ref("product");
+const priceRanges = ref({
+    "$0 - $50": false,
+    "$50 - $100": false,
+    "$100 - $200": false,
+    "Over $200": false,
+});
+const drop = ref(null);
 
-        const sortSize = () => {
-            drop = null;
-        };
-
-        const sortCheckbox = () => {
-            console.log("sortCheckbox")
-            let selectedPriceRanges = Object.entries(priceRanges.value)
-                .filter(([range, isChecked]) => isChecked) // Отбираем только отмеченные диапазоны
-                .map(([range]) => range); // Получаем только названия диапазонов
-            store.dispatch("sortCheckbox", {
-                filter: selectedFilter.value,
-                priceRanges: selectedPriceRanges
-            });
-            drop = null;
-        };
-
-        const togglePriceRange = (priceRange) => {
-            priceRanges.value[priceRange] = !priceRanges.value[priceRange];
-            sortCheckbox();
-            drop = null
-        };
-
-        return {
-            store,
-            sortItems,
-            selectedFilter,
-            sortSize,
-            togglePriceRange,
-            priceRanges,
-            sortCheckbox,
-            drop
-        };
-    }
+const sortItems = () => {
+    console.log("sortItems", selectedFilter.value)
+    let selectedPriceRanges = Object.entries(priceRanges.value)
+        .filter(([range, isChecked]) => isChecked) // Отбираем только отмеченные диапазоны
+        .map(([range]) => range);
+    // Получаем только названия диапазонов
+    store.sortFilteredCards({
+        filter: selectedFilter.value,
+        priceRanges: selectedPriceRanges
+    })
+    //.then(() => {console.log("Dispatch completed"); // Подтверждение выполнения действия }).catch(error => {console.error("Error in dispatch:", error); // Логируем ошибки});
+    drop.value = null
 };
 
-</script>
+const sortSize = () => {
+    drop.value = null;
+};
 
+const sortCheckbox = () => {
+    console.log("sortCheckbox")
+    let selectedPriceRanges = Object.entries(priceRanges.value)
+        .filter(([range, isChecked]) => isChecked) // Отбираем только отмеченные диапазоны
+        .map(([range]) => range); // Получаем только названия диапазонов
+    store.sortFilteredCards({
+        filter: selectedFilter.value,
+        priceRanges: selectedPriceRanges
+    });
+    drop.value = null;
+};
+
+const togglePriceRange = (priceRange) => {
+    priceRanges.value[priceRange] = !priceRanges.value[priceRange];
+    sortCheckbox();
+    drop.value = null
+};
+</script>
 <template>
     <div>
         <nav @click="drop = 4" class="nav-filter">

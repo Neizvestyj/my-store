@@ -1,23 +1,15 @@
-<script>
-
+<script setup>
+alert('promoP')
 import { computed } from 'vue';
 import { useStore } from '../store';
 import cardSlider from './cardSlider.vue';
 import cat from './cat.vue';
-export default {
-    name: 'promoProduct',
-    components: { cardSlider, cat },
-    setup() {
-        const store = useStore(); // Используем Vuex Store
-        const cards = computed(() => {
-            return store.getters.sliderCatalog;
-        });
 
-        return {
-            cards,
-        };
-    },
-};
+const store = useStore(); // Используем Vuex Store
+const cards = computed(() => {
+    return store.getSliderCatalog;
+});
+console.log(cards.value)
 </script>
 
 <template>
