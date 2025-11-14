@@ -19,7 +19,7 @@ const add = (cardId) => {
         quantity: quantity.value
     };
     console.log("Payload:P", payload); // Логируем полезный объект для дальнейшей отладки
-    store.add(payload);
+    store.addToCard(payload);
 };
 const filteredCards = computed(() => {
     return store.filteredCards || [];

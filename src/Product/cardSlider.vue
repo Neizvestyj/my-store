@@ -12,17 +12,17 @@ const filteredCards = computed(() => {
   return store.filteredCards || [];
 });
 const card = computed(() => {// карточка !!!!!!!!!!
-  console.log(current.value);
+  // console.log(current.value);
   // Проверяем, что current.value в пределах допустимых значений
   if (current.value < 0 || current.value >= filteredCards.value.length) {
     return {};
   }
   const cardItem = filteredCards.value[current.value];
-  console.log(cardItem)
+  // console.log(cardItem)
   return cardItem ? cardItem : {};
 });
 onMounted(() => {
-  store.setCurrentCard(card.value);
+  store.setCurrentCard(card.value, current.value);
   const el = document.querySelector('.swiper-container'); // Получаем элемент контейнера
   swiperInstance.value = new Swiper(el, {
     slidesPerView: 1,
@@ -40,7 +40,8 @@ onMounted(() => {
     on: {
       slideChange: () => {
         current.value = swiperInstance.value.realIndex //|| swiperInstance.value.activeIndex;
-        store.setCurrentCard(card); // Сохранение текущей карточки в хранилище
+        store.setCurrentCard(card.value, current.value);
+        console.log(current.value)// Сохранение текущей карточки в хранилище
         //или  store.commit('setCurrentCard',filteredCards.value[current.value]);
       }
     }
@@ -58,10 +59,12 @@ onBeforeUnmount(() => {
 const goNext = () => {
   if (swiperInstance.value)
     swiperInstance.value.slideNext();
+  store.sliderPageNext();
 };
 const goPrev = () => {
   if (swiperInstance.value)
     swiperInstance.value.slidePrev();
+  store.sliderItemsPerPagePrev();
 };
 // page — 0-based индекс
 const goToPageSlider = (page) => {

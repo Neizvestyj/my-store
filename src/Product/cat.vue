@@ -1,21 +1,31 @@
-<script>
+<script setup>
 import { computed } from 'vue';
 import { useStore } from '../store';
-export default {
-    name: 'cat',
-    setup() {
-        const store = useStore();
-        const catalogProduct = computed(() => {
-            return store.getCatalogProduct;
-        });
-        return { catalogProduct, };
+const sliderItemsPerPage = 1;
+const store = useStore();
+const id = computed(() => {
+    if (id.value === 5) {
+        return 1
     }
-};
+    return store.id;
+});
+const cards = computed(() => {
+    return store.cards;
+});
+const cardsSlice = computed(() => {
+
+    const start = (id.value) * sliderItemsPerPage;
+    const end = start + sliderItemsPerPage;
+    return cards.value.slice(start + 1, end + 2);
+
+})
+console.log(cardsSlice.value.length)
+
 </script>
 <template>
     <div>
         <div class="card-block">
-            <figure v-for="card in  catalogProduct" :key="card.id" class="item-card">
+            <figure v-for="card in  cardsSlice" :key="card.id" class="item-card">
                 <img class="item-card__image" :src="card.image" alt="">
 
                 <div class="item-card__overlay">

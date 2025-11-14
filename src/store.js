@@ -16,12 +16,31 @@ export const useStore = defineStore('store', {
         itemsPerPage: 2,
         //для Product
         sliderPage: 1,
-        sliderItemsPerPage: 1,
+        sliderItemsPerPage: 2,
+        //filterProduct
+        current: null,
         cardCurrent: null,
+        id: 0,
     }),
     actions: {
-        setCurrentCard(card) {
+        sliderPageNext() {
+            this.sliderPage + 1;
+            console.log(this.sliderPage)
+            //this.sliderItemsPerPage++;
+        },
+        sliderItemsPerPagePrev() {
+            this.sliderItemsPerPage - 1;
+            if (this.sliderItemsPerPage < 1) {
+                this.sliderItemsPerPage = 1; // чтобы не было отрицательного значения
+            }
+        },
+
+        //cardSlider
+        setCurrentCard(card, id) {
             this.cardCurrent = card;
+            this.id = id
+
+            // this.current = current;
         },
         async fetchCards() {
             try {
@@ -171,9 +190,11 @@ export const useStore = defineStore('store', {
                 return;
             }
             console.log(currentImage)
-            const productToAdd = this.filteredCards.find(item => item.id === currentImage);
+            const productToAdd = this.filteredCards.find(item => item.id === currentImage,
 
-            const existingProduct = this.cart.find(item => item.id === productToAdd.id);
+            );
+
+            const existingProduct = this.cart.find(item => item.id === productToAdd.id && item.color === color && item.size === size);
             if (existingProduct) {
                 existingProduct.quantity++;
                 state.sum += existingProduct.price;
@@ -200,18 +221,9 @@ export const useStore = defineStore('store', {
             const end = start + state.itemsPerPage;
             return state.filteredCatalog.slice(start, end + 1);
         },
-        //компонент Product
-        getSliderCatalog(state) {
-            const start = (state.sliderPage - 1) * state.sliderItemsPerPage;
-            const end = start + state.sliderItemsPerPage;
-            return state.filteredCatalog.slice(start, end);
-        },
-        // компонент cat
-        getCatalogProduct(state) {
-            const start = (state.sliderPage - 1) * state.sliderItemsPerPage;
-            const end = start + state.sliderItemsPerPage;
-            return state.filteredCatalog.slice(start + 1, end + 2);
-        },
+
+
+
     }
 });
 

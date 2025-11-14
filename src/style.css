@@ -366,8 +366,6 @@ body {
 }
 
 .quantity-selector-product {
-
-  left: 150px;
   position: absolute;
   display: flex;
   /* Используем flexbox для выравнивания */
@@ -1750,6 +1748,7 @@ a:hover {
 }
 
 .ad-to-card {
+  margin-left: 30%;
   padding: 10px 40px;
   outline: 1px solid #F16D7F;
   color: #F16D7F;
