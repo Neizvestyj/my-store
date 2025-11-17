@@ -2,6 +2,8 @@
 <script>
 import { ref, computed, watch } from 'vue';
 import { useStore } from '../store';
+import { v4 as uuidv4 } from 'uuid';
+
 export default {
     name: 'filterProduct',
     // props: { card: { type: Object, required: true }, },
@@ -60,19 +62,26 @@ export default {
         };
 
         const addToCard = () => {
+
+            const uniqueId = uuidv4(); // Генерируем уникальный ID
             // Проверка на существование card перед использованием его id
-            const currentCard = cardCurrent.value; // Получаем текущее значение cardCurrent
+            const currentCard = cardCurrent.value // Получаем текущее значение cardCurrent
             if (currentCard && currentCard.id) {
                 store.addToCard({
+                    ide: uniqueId,
                     currentImage: currentCard.id,
                     color: selectedColor.value,
                     size: selectedSize.value,
                     quantity: localQuantity.value
                 });
+
                 console.log(" 2 Current image ID:", currentCard.id);
+                console.log(" 3 Current image ID:", ide.value);
             } else {
                 console.error(" 3 Card object is undefined in addToCard method.");
             }
+            selectedColor.value = 'White';
+            selectedSize.value = 'M';
         };
 
         watch(cardCurrent, (newCard) => {
