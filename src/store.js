@@ -100,16 +100,24 @@ export const useStore = defineStore('store', {
         toggleMenu() {
             this.isOpen = !this.isOpen;
         },
-        closeMenu(state) {
+        closeMenu() {
             this.isOpen = false;
         },
         //компонент Cart
-        del({ idDel, color, size }) {
-            const cardToRemove = this.cart.find(c => c.id === idDel && c.color === color && c.size && size);
+        del(cardDel) {
+            if (!cardDel) {
+                console.error('cardDel is undefined');
+                return; // Прекращаем выполнение, если cardDel не определен
+            }
+            //  console.log(cardDel.id, cardDel.ide)
+            // const cardToRemove = this.cart.find(c => c.id === idDel && c.ide === ide && c.color === color && c.size === size);
+            const cardToRemove = this.cart.find(c => c.ide === cardDel.ide && c.color === cardDel.color && c.size === cardDel.size);
             if (cardToRemove) {
                 this.sum -= (cardToRemove.price * cardToRemove.quantity);
             }
-            this.cart = this.cart.filter(c => !(c.id === idDel && c.color === color && c.size === size));
+            // this.cart = this.cart.filter(c => !(c.id === idDel && c.ide === ide && c.color === color && c.size === size));
+            // Удаляем карточку из корзины
+            this.cart = this.cart.filter(c => !(c.ide === cardDel.ide && c.color === cardDel.color && c.size === cardDel.size));
         },
         //!
         buy() {
@@ -122,42 +130,37 @@ export const useStore = defineStore('store', {
             this.cart = [];
             console.log("Clearing cart");
         },
-        increaseQuantity({ quantity, currentImage, color, size }) {
+        increaseQuantity({ quantity, currentImage, ide }) {
             console.log(" increaseQuantity")
-            console.log("decreaseQuantity called with:", { quantity, currentImage, color, size });
-            console.log(card.value)
-            const card = this.cart.find(item => item.id === currentImage && item.color === color && item.size === size);
+            console.log("decreaseQuantity called with:", { quantity, currentImage });
+
+            const card = this.cart.find(item => item.ide === ide);
             if (card) {
 
                 //state.sum -= card.price * card.quantity;
-
                 card.quantity = quantity;
                 this.sum += card.price  //card.quantity;
-
-
                 /*  this.sum -= card.price * card.quantity; // Предыдущая общая сумма до изменения
                   card.quantity = quantity; // Обновление количества
                   this.sum += card.price * card.quantity; // Обновление общей суммы
   */
                 console.log(" increaseQuantity2")
-
             }
         },
         //!
-        decreaseQuantity({ quantity, currentImage, color, size }) {
+        decreaseQuantity({ quantity, currentImage, ide }) {
             console.log(" decreaseQuantity")
-            console.log("decreaseQuantity called with:", { quantity, currentImage });
-            const card = this.cart.find(item => item.id === currentImage);
+            console.log("decreaseQuantity called with:", { quantity, currentImage, ide });
+            const card = this.cart.find(item => item.ide === ide);
             if (card) {
+
                 this.sum -= card.price;
                 card.quantity = quantity;
-
                 /*  this.sum -= card.price * card.quantity; // Предыдущая общая сумма до изменения
                   card.quantity = quantity; // Обновление количества
                   this.sum += card.price * card.quantity; // Обновление общей суммы
                   */
                 console.log("  decreaseQuantity2")
-
             }
         },
         login() {
@@ -175,15 +178,14 @@ export const useStore = defineStore('store', {
         addToCard(payload) {
             const { ide, currentImage, color, size, quantity } = payload;
             if (currentImage == null) {
-
                 console.error(" 4 currentImage is null");
                 return;
             }
             console.log(currentImage,)
             console.log('Уникальный ID ' + ide)
             const productToAdd = this.filteredCards.find(item => item.id === currentImage);
-
-            const existingProduct = this.cart.find(item => item.id === productToAdd.id && item.color === color && item.size === size);
+            // const existingProduct = this.cart.find(item => item.id === productToAdd.id && item.color === color && item.size === size);
+            const existingProduct = this.cart.find(item => item.ide === productToAdd.ide && item.color === color && item.size === size);
             if (existingProduct) {
                 existingProduct.quantity++;
                 state.sum += existingProduct.price;

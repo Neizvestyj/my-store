@@ -1,113 +1,92 @@
 
-<script>
+<script setup>
 import { ref, computed, watch } from 'vue';
 import { useStore } from '../store';
 import { v4 as uuidv4 } from 'uuid';
+const store = useStore();
+const drop = ref(null);
+const selectedColor = ref("White");
+const selectedSize = ref("M");
+const localQuantity = ref(1);
+const currentImage = ref(0);
+const ide = ref(0);
+const cardCurrent = computed(() => {
+    return store.getCardCurrent || {}
 
-export default {
-    name: 'filterProduct',
-    // props: { card: { type: Object, required: true }, },
-    setup() {
-        const store = useStore();
-        const drop = ref(null);
-        const selectedColor = ref("White");
-        const selectedSize = ref("M");
-        const localQuantity = ref(1);
-        const currentImage = ref(0);
-        const cardCurrent = computed(() => {
-            return store.getCardCurrent || {}
+});
 
+const increaseQuantity = () => {
+    if (cardCurrent.value && cardCurrent.value.quantity !== undefined) {
+        localQuantity.value++;
+        updateCardQuantity();
+    }
+};
+const decreaseQuantity = () => {
+    if (localQuantity.value > 1) {
+        localQuantity.value--;
+        updateCardQuantity();
+    }
+};
+const onInputChange = (event) => {
+    const newQuantity = parseInt(event.target.value);
+    if (!isNaN(newQuantity) && newQuantity >= 1) {
+        localQuantity.value = newQuantity;
+        updateCardQuantity();
+    } else {
+        localQuantity.value = 1;
+    }
+    updateCardQuantity();
+};
+const updateCardQuantity = () => {
+    if (cardCurrent.value && cardCurrent.value.id) {
+        store.increaseQuantity({
+            quantity: localQuantity.value,
+            currentImage: cardCurrent.value.id
+        });
+    }
+};
+const changeColor = (color) => {
+    selectedColor.value = color;
+    drop.value = false;
+    console.log(selectedColor.value)
+};
+
+const changeSize = (size) => {
+    selectedSize.value = size;
+    drop.value = null;
+    console.log(selectedSize.value)
+};
+
+const addToCard = () => {
+
+    const uniqueId = uuidv4(); // Генерируем уникальный ID
+    // Проверка на существование card перед использованием его id
+    const currentCard = cardCurrent.value // Получаем текущее значение cardCurrent
+    if (currentCard && currentCard.id) {
+        store.addToCard({
+            ide: uniqueId,
+            currentImage: currentCard.id,
+            color: selectedColor.value,
+            size: selectedSize.value,
+            quantity: localQuantity.value
         });
 
-        const increaseQuantity = () => {
-            if (cardCurrent.value && cardCurrent.value.quantity !== undefined) {
-                localQuantity.value++;
-                updateCardQuantity();
-            }
-        };
-        const decreaseQuantity = () => {
-            if (localQuantity.value > 1) {
-                localQuantity.value--;
-                updateCardQuantity();
-            }
-        };
-        const onInputChange = (event) => {
-            const newQuantity = parseInt(event.target.value);
-            if (!isNaN(newQuantity) && newQuantity >= 1) {
-                localQuantity.value = newQuantity;
-                updateCardQuantity();
-            } else {
-                localQuantity.value = 1;
-            }
-            updateCardQuantity();
-        };
-        const updateCardQuantity = () => {
-            if (cardCurrent.value && cardCurrent.value.id) {
-                store.increaseQuantity({
-                    quantity: localQuantity.value,
-                    currentImage: cardCurrent.value.id
-                });
-            }
-        };
-        const changeColor = (color) => {
-            selectedColor.value = color;
-            drop.value = false;
-            console.log(selectedColor.value)
-        };
-
-        const changeSize = (size) => {
-            selectedSize.value = size;
-            drop.value = null;
-            console.log(selectedSize.value)
-        };
-
-        const addToCard = () => {
-
-            const uniqueId = uuidv4(); // Генерируем уникальный ID
-            // Проверка на существование card перед использованием его id
-            const currentCard = cardCurrent.value // Получаем текущее значение cardCurrent
-            if (currentCard && currentCard.id) {
-                store.addToCard({
-                    ide: uniqueId,
-                    currentImage: currentCard.id,
-                    color: selectedColor.value,
-                    size: selectedSize.value,
-                    quantity: localQuantity.value
-                });
-
-                console.log(" 2 Current image ID:", currentCard.id);
-                console.log(" 3 Current image ID:", ide.value);
-            } else {
-                console.error(" 3 Card object is undefined in addToCard method.");
-            }
-            selectedColor.value = 'White';
-            selectedSize.value = 'M';
-        };
-
-        watch(cardCurrent, (newCard) => {
-            // Синхронизируем quantity, когда card меняется
-            localQuantity.value = newCard.quantity !== undefined ? newCard.quantity : 1;
-        },
-            {
-                immediate: true, // Обновляем сразу, при первой загрузке
-            });
-
-        return {
-            drop,
-            selectedColor,
-            selectedSize,
-            localQuantity,
-            increaseQuantity,
-            decreaseQuantity,
-            onInputChange,
-            updateCardQuantity,
-            changeColor,
-            changeSize,
-            addToCard,
-            cardCurrent,
-        };
-    },
+        console.log(" 2 Current image ID:", currentCard.id);
+        console.log(" 3 Current image ID:", ide.value);
+    } else {
+        console.error(" 3 Card object is undefined in addToCard method.");
+    }
+    // selectedColor.value = 'White';
+    //  selectedSize.value = 'M';
 };
+
+watch(cardCurrent, (newCard) => {
+    // Синхронизируем quantity, когда card меняется
+    localQuantity.value = newCard.quantity !== undefined ? newCard.quantity : 1;
+},
+    {
+        immediate: true, // Обновляем сразу, при первой загрузке
+    });
 </script>
 
 <template>
