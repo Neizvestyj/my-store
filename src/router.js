@@ -21,7 +21,12 @@ const router = createRouter({
 
     ],
     linkActiveClass: 'active',
-    linkExactActiveClass: 'active'
+    linkExactActiveClass: 'active',
+    scrollBehavior(to, from, savedPosition) {
+        console.log('scrollBehavior called');
+        return { left: 0, top: 0 }; // Устанавливаем прокрутку на верх страницы
+    },
+
 })
 
 router.beforeEach((to, from, next) => {

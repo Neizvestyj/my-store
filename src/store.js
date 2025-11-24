@@ -11,6 +11,7 @@ export const useStore = defineStore('store', {
         isValid: false,//флаг для карт
         currentImage: 0,
         sum: 0,// сумма в карзине
+        isValidDel: false,
         //для Catalog
         currentPage: 1,
         itemsPerPage: 2,
@@ -23,6 +24,18 @@ export const useStore = defineStore('store', {
         id: 0,
     }),
     actions: {
+        saveLocal() {
+            localStorage.setItem("cart", JSON.stringify(this.cart));
+            console.log('saveLocal')
+        },
+        loadingCart() {
+            const savedCart = localStorage.getItem('cart');
+            console.log('loadingCart')
+            if (savedCart) {
+                this.cart = JSON.parse(savedCart);
+                this.sum = this.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            }
+        },
         sliderPageNext() {
             this.sliderPage + 1;
             console.log(this.sliderPage)
@@ -49,6 +62,7 @@ export const useStore = defineStore('store', {
                 const data = await response.json();
                 console.log(data);
                 this.setCards(data.products);
+                //  this.loadingCart();
             } catch (error) {
                 console.error('There has been a problem with your fetch operation:', error);
                 alert("Ошибка при загрузке данных");
@@ -105,6 +119,7 @@ export const useStore = defineStore('store', {
         },
         //компонент Cart
         del(cardDel) {
+            this.isValidDel = true;
             if (!cardDel) {
                 console.error('cardDel is undefined');
                 return; // Прекращаем выполнение, если cardDel не определен
@@ -114,10 +129,13 @@ export const useStore = defineStore('store', {
             const cardToRemove = this.cart.find(c => c.ide === cardDel.ide && c.color === cardDel.color && c.size === cardDel.size);
             if (cardToRemove) {
                 this.sum -= (cardToRemove.price * cardToRemove.quantity);
+                cardToRemove.removing = true;
             }
             // this.cart = this.cart.filter(c => !(c.id === idDel && c.ide === ide && c.color === color && c.size === size));
             // Удаляем карточку из корзины
             this.cart = this.cart.filter(c => !(c.ide === cardDel.ide && c.color === cardDel.color && c.size === cardDel.size));
+            // this.saveLocal()
+            localStorage.setItem("cart", JSON.stringify(this.cart));
         },
         //!
         buy() {
@@ -145,6 +163,8 @@ export const useStore = defineStore('store', {
                   this.sum += card.price * card.quantity; // Обновление общей суммы
   */
                 console.log(" increaseQuantity2")
+                //this.saveLocal()
+                localStorage.setItem("cart", JSON.stringify(this.cart));
             }
         },
         //!
@@ -161,6 +181,8 @@ export const useStore = defineStore('store', {
                   this.sum += card.price * card.quantity; // Обновление общей суммы
                   */
                 console.log("  decreaseQuantity2")
+                //this.saveLocal()
+                localStorage.setItem("cart", JSON.stringify(this.cart));
             }
         },
         login() {
@@ -169,6 +191,7 @@ export const useStore = defineStore('store', {
         //компонент Cart
         setIsValid(value) {
             this.isValid = value;
+            this.isValidDel = value;
         },
         //компонент pagination!
         setCurrentPage(page) {
@@ -181,7 +204,6 @@ export const useStore = defineStore('store', {
                 console.error(" 4 currentImage is null");
                 return;
             }
-            console.log(currentImage,)
             console.log('Уникальный ID ' + ide)
             const productToAdd = this.filteredCards.find(item => item.id === currentImage);
             // const existingProduct = this.cart.find(item => item.id === productToAdd.id && item.color === color && item.size === size);
@@ -189,10 +211,13 @@ export const useStore = defineStore('store', {
             if (existingProduct) {
                 existingProduct.quantity++;
                 state.sum += existingProduct.price;
+                this.saveLocal();
+                //localStorage.setItem("cart", JSON.stringify(this.cart));
             } else {
-                const newProduct = { ...productToAdd, ide, quantity, color, size };
+                const newProduct = { ...productToAdd, ide, quantity, color, size, removing: false };
                 this.cart.push(newProduct);
                 this.sum += newProduct.price * newProduct.quantity;
+                this.saveLocal();
             }
         },
     },

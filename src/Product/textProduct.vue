@@ -1,29 +1,19 @@
-<script>
+<script setup>
 
 import { computed } from 'vue';
 import { useStore } from '../store';
-import filterProduct from './filterProduct.vue';
+import filterProduct from './filterproduct.vue';
+import { defineProps } from 'vue';
 
-export default {
-    name: 'textProduct',
-    components: { filterProduct },
-    props: { card: { type: Object, required: true, }, },
-    setup(props) {
-        const store = useStore();
-        const grandTotal = computed(() => store.sum
-        );
-        const cardCurrent = computed(() =>
-            store.getCardCurrent
 
-        );
+const props = defineProps({ card: { type: Object, required: true, }, });
 
-        return {
-            grandTotal,
-            // card: props.card,
-
-        };
-    },
-};
+const store = useStore();
+const grandTotal = computed(() => store.sum
+);
+const cardCurrent = computed(() =>
+    store.getCardCurrent
+);
 </script>
 
 <template>

@@ -10,6 +10,7 @@ const store = useStore();
 //components: { Navbar, Advantages, Feedback, Footer },
 onMounted(() => {
   store.fetchCards();
+  store.loadingCart();
 });
 
 </script>

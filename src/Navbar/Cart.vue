@@ -1,4 +1,5 @@
 <script setup>
+import Alertdel from './Alertdel.vue'
 import { ref, computed } from 'vue';
 import { useStore } from '../store';
 const store = useStore();
@@ -7,9 +8,17 @@ const stateInput = ref("");
 const zip = ref("");
 const emailError = ref("");
 
+
+
 //const del = (idDel, ide, color, size) => { store.del({ idDel, ide, color, size })};
 const del = (card) => {
-    store.del(card)
+    card.removing = true;
+    setTimeout(() => {
+        store.del(card); // Вызываем метод удаления из хранилища
+    }, 500);
+
+
+
 };
 //Покупка товра 
 const buy = () => {
@@ -93,7 +102,9 @@ const grandTotal = computed(() =>
 
 <template>
     <div>
+        <Alertdel />
         <main v-if="cart.length" class="card-promo-shop">
+
             <div class="promo-shopcart center">
                 <h1 class="promo-heading-cart">SHOPPING CART</h1>
             </div>
@@ -101,7 +112,8 @@ const grandTotal = computed(() =>
             <div class="cart-form  center wrap">
                 <div class="block-cart wrap center">
 
-                    <div v-for="card in cart" :key="card.id" class="block-cart-mini1">
+                    <div v-for="card in cart" :key="card.id" class="block-cart-mini1"
+                        :class="{ 'fade-out': card.removing }">
                         <div class="mango1"><img class="mango-scale" width="262" height="306" :src="card.image"
                                 alt="mango1"></div>
                         <div class="block-header">

@@ -1,11 +1,11 @@
 <script setup>
-alert('promoP')
+
 import { computed } from 'vue';
 import { useStore } from '../store';
 import cardSlider from './cardSlider.vue';
 import cat from './cat.vue';
 
-const store = useStore(); // Используем Vuex Store
+const store = useStore();
 const cards = computed(() => {
     return store.getSliderCatalog;
 });
@@ -18,13 +18,16 @@ console.log(cards.value)
         <div class="promo-mini center">
             <div class="heading-left">NEW ARRIVALS </div>
             <div class="heading-right">
-                <a class="promo-mini-home" href="index.html">HOME /</a>
+                <router-link to="/promo">
+                    <a class="promo-mini-home"> HOME/ </a>
+                </router-link>
                 <a class="promo-mimi-men" href="#">MEN /</a>
-                <a class="promo-mini-arrivals" href="#"><span class="arrivals">NEW ARRIVALS</span></a>
+                <router-link to="/PromoMini"> <a class="promo-mini-arrivals"><span class="arrivals">NEW
+                            ARRIVALS</span></a></router-link>
             </div>
         </div>
 
-        <cardSlider :cards="cards"></cardSlider>
+        <cardSlider></cardSlider>
         <cat></cat>
 
     </div>

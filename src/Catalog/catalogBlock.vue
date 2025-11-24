@@ -1,21 +1,36 @@
 <script setup>
 alert("catalogBlock")
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useStore } from '../store';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const store = useStore();
 console.log("Store доступен:", store);
-const add = (cardId) => {
-    console.log("Adding product with ID:", cardId);
-    const payload = {
-        currentImage: cardId,
-        color: "white",
-        size: "m",
-        quantity: 1
-    };
-    console.log("Payload:", payload); // Логируем полезный объект для дальнейшей отладки
-    store.add(payload);
+const selectedColor = ref("White");
+const selectedSize = ref("M");
+const localQuantity = ref(1);
+const ide = ref(0);
+
+const addToCard = (card) => {
+    const uniqueId = uuidv4(); // Генерируем уникальный ID
+    // Проверка на существование card перед использованием его id
+    const currentCard = card // Получаем текущее значение cardCurrent
+    if (currentCard && currentCard.id) {
+        store.addToCard({
+            ide: uniqueId,
+            currentImage: currentCard.id,
+            color: selectedColor.value,
+            size: selectedSize.value,
+            quantity: localQuantity.value
+        });
+        console.log(" 2 Current image ID:", currentCard.id);
+        console.log(" 3 Current image ID:", ide.value);
+    } else {
+        console.error(" 3 Card object is undefined in addToCard method.");
+    }
+    // selectedColor.value = 'White';
+    //  selectedSize.value = 'M';
 };
 
 const paginatedCatalog = computed(() => {
@@ -34,7 +49,7 @@ console.log("Paginated Catalog:", store.getPaginatedCatalog.value);
                 <img class="item-card__image" :src="card.image" alt="">
 
                 <div class="item-card__overlay">
-                    <button @click='add(card.id)' class="item-card__overlay_to-cart-but">
+                    <button @click='addToCard(card)' class="item-card__overlay_to-cart-but">
                         <svg class="item-card__overlay_to-cart-but_svg" width="27" height="25" viewBox="0 0 27 25"
                             fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path class="item-card__overlay_to-cart-but_svg"

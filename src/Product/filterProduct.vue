@@ -63,6 +63,7 @@ const addToCard = () => {
     // Проверка на существование card перед использованием его id
     const currentCard = cardCurrent.value // Получаем текущее значение cardCurrent
     if (currentCard && currentCard.id) {
+
         store.addToCard({
             ide: uniqueId,
             currentImage: currentCard.id,
@@ -237,7 +238,7 @@ watch(cardCurrent, (newCard) => {
         </div>
 
         <div class="block-add-cart">
-            <button @click="addToCard()" class="ad-to-card">
+            <button @click="addToCard(card)" class="ad-to-card">
                 <svg class=" ad-to-card-carzina" width="27" height="25" viewBox="0 0 27 25" fill='none'
                     xmlns="http://www.w3.org/2000/svg">
                     <path
