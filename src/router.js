@@ -6,7 +6,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const Login = () => import('./navbar/login.vue');
 const Cart = () => import('./navbar/cart.vue');
-const Promo = () => import('./promo.vue');
+const Promo = () => import('./Promo.vue');
 const PromoMini = () => import('./Catalog/PromoMini.vue');
 const promoProduct = () => import('./Product/promoProduct.vue');
 const router = createRouter({

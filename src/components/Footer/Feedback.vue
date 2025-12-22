@@ -56,7 +56,7 @@ export default {
         <Alert />
 
         <div class="feedback-block-center center">
-            <div class="option"><img width="97px" height="97px" src="img/statement.png" alt="option">
+            <div class="option"><img width="97px" height="97px" src="/img/statement.png" alt="option">
                 <p class="option-text">“Vestibulum quis porttitor dui!<span class="option-italic">Quisque viverra
                         nunc mi, a pulvinar purus condimentum“</span></p>
             </div>

@@ -23,7 +23,7 @@ const cardCurrent = computed(() =>
                 <h1 class="center-about-h1">WOMEN COLLECTION</h1>
             </div>
             <div class="center-line">
-                <img src="img/linepink.svg" alt="linepink">
+                <img src="/img/linepink.svg" alt="linepink">
             </div>
             <div>
                 <h2 class="center-about-h2">MOSCHINO CHEAP AND CHIC</h2>

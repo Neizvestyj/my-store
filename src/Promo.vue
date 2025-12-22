@@ -4,16 +4,18 @@
 
 import { ref, computed } from 'vue';
 import { useStore } from './store';
-
+import { v4 as uuidv4 } from 'uuid';
 const store = useStore();
 const currentImage = ref(null);
 const color = ref("white");
 const size = ref("m");
 const quantity = ref(1);
-const add = (cardId) => {
-    console.log("Adding product with ID:", cardId);
+const addToCard = (card) => {
+
+    const uniqueId = uuidv4();
     const payload = {
-        currentImage: cardId,
+        ide: uniqueId,
+        currentImage: card.id,
         color: color.value,
         size: size.value,
         quantity: quantity.value
@@ -91,7 +93,7 @@ const filteredCards = computed(() => {
                         <figure v-for="card in filteredCards" :key="card.id" class="item-card">
                             <img class="item-card__image" :src="card.image" alt="">
                             <div class="item-card__overlay">
-                                <button @click='add(card.id)' class="item-card__overlay_to-cart-but">
+                                <button @click='addToCard(card)' class="item-card__overlay_to-cart-but">
                                     <svg class="item-card__overlay_to-cart-but_svg" width="27" height="25"
                                         viewBox="0 0 27 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path class="item-card__overlay_to-cart-but_svg"

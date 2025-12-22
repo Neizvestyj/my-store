@@ -206,11 +206,17 @@ export const useStore = defineStore('store', {
             }
             console.log('Уникальный ID ' + ide)
             const productToAdd = this.filteredCards.find(item => item.id === currentImage);
-            // const existingProduct = this.cart.find(item => item.id === productToAdd.id && item.color === color && item.size === size);
-            const existingProduct = this.cart.find(item => item.ide === productToAdd.ide && item.color === color && item.size === size);
+            if (!productToAdd) {
+                console.error("Product not found in filteredCards");
+                return;
+            }
+            const existingProduct = this.cart.find(item => item.id === productToAdd.id && item.color === color && item.size === size);
+            // Проверка на случай, если productToAdd не найден
+
+            //const existingProduct = this.cart.find(item => item.ide === productToAdd.ide && item.color === color && item.size === size);
             if (existingProduct) {
                 existingProduct.quantity++;
-                state.sum += existingProduct.price;
+                this.sum += existingProduct.price
                 this.saveLocal();
                 //localStorage.setItem("cart", JSON.stringify(this.cart));
             } else {
