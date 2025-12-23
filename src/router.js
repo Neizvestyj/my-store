@@ -13,7 +13,7 @@ const router = createRouter({
     history: createMemoryHistory(),
     base: process.env.BASE_URL,
     routes: [
-        { path: '/', redirect: '/promo' },
+        { path: '/', redirect: '/PromoMini' },
         { path: '/promo', component: Promo },
         { path: '/login', component: Login },
         { path: '/cart', component: Cart },

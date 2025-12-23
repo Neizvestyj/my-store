@@ -17,6 +17,7 @@ onMounted(() => {
 <template>
   <div class="overflow-hidden">
     <Navbar />
+
     <router-view></router-view>
     <aside>
       <Advantages />
