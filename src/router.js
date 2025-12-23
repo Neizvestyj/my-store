@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
-
+//import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createMemoryHistory } from 'vue-router';
 //import Login from './navbar/Login.vue'
 //import Cart from './navbar/Cart.vue'
 //import Promo from './Promo.vue'
@@ -10,7 +10,8 @@ const Promo = () => import('./Promo.vue');
 const PromoMini = () => import('./Catalog/PromoMini.vue');
 const promoProduct = () => import('./Product/promoProduct.vue');
 const router = createRouter({
-    history: createWebHistory(),
+    history: createMemoryHistory(),
+    base: process.env.BASE_URL,
     routes: [
         { path: '/', redirect: '/promo' },
         { path: '/promo', component: Promo },
